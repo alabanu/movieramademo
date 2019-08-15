@@ -22,6 +22,7 @@ h1#logo {
 	left:0;
 }
 h1#logo a {
+  margin-top: 44px;
 	float:left;
 	width: 200px;
     height: 150px;
@@ -29,4 +30,12 @@ h1#logo a {
 	font-size:0;
 	line-height:0;
 	text-indent:-4000px;
+}
+
+.card{
+  width: 130px;
+}
+
+.img{
+  width: 130px;
 }

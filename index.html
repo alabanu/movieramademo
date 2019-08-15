@@ -9,6 +9,7 @@
     body {
       font-family: 'Roboto', sans-serif;
       font-size: 16px;
+      width: 200px;
     }
   </style>
 </head>
@@ -23,10 +24,10 @@
       <div id="sub-navigation">
         <a href="#">NOW PLAYING</a>
         <div id="search">
-          <form action="#" method="get" accept-charset="utf-8">
+          <form  action="" method="GET" >
             <label for="search-field">SEARCH</label>
-            <input type="text" name="search field" value="Enter search here" id="search-field" class="blink search-field" />
-            <input type="submit" value="GO!" class="search-button" />
+            <!-- <input type="text" name="search field" value="Enter search here" id="search-field" class="blink search-field" /> -->
+            <input type="button" value="GO!" class="search-button" onclick="search_form('godfather');"/>
           </form>
         </div>
       </div>
