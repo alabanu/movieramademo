@@ -1,5 +1,15 @@
-let page = 0;
 
+let page = 0;
+const container = document.getElementById('container');
+const baseUrl = 'https://api.themoviedb.org/3/';
+
+
+window.onload = function(e){ 
+    $(".loader").fadeIn("slow");
+    addPage(++page);
+}
+
+/*In theaters*/
 function getDocumentHeight() {
     const body = document.body;
     const html = document.documentElement;
@@ -18,29 +28,26 @@ function addPage(page) {
     fetchPage(page);
 }
 
-addPage(++page);
 
 window.onscroll = function () {
     if (getScrollTop() < getDocumentHeight() - window.innerHeight) return;
     addPage(++page);
+    $(".loader").fadeIn("slow");
 };
 
 async function fetchPage(page) {
-    const container = document.getElementById('container');
 
-    url = "https://api.themoviedb.org/3/movie/now_playing?api_key=bc50218d91157b1ba4f142ef7baaa6a0&page=" + page;
+    url = baseUrl + 'movie/now_playing?api_key=bc50218d91157b1ba4f142ef7baaa6a0&page=' + page;
     await fetch(url, {
         method: 'get',
-        async: false,
-    }).then(function (res) {
-        return res.json();
+        async: true,
+    }).then(response => {
+        return response.json();
     }).then(async function (myJson) {
 
         array = JSON.stringify(myJson);
         var movies = JSON.parse(array);
-        console.log(movies.results);
-
-
+       
         for (var x = 0; x < movies.results.length; x++) {
             const card = document.createElement('div');
             card.setAttribute('class', 'card');
@@ -54,11 +61,10 @@ async function fetchPage(page) {
             var img = document.createElement("img");
             img.setAttribute('class', 'img');
             if (movies.results[x].poster_path != null) {
-                img.src = "https://image.tmdb.org/t/p/original" + movies.results[x].poster_path;
+                img.src = 'https://image.tmdb.org/t/p/original' + movies.results[x].poster_path;
             }
             else {
-                img.src = "https://amfnews.com/wp-content/uploads/2014/10/default-img-1000x600.gif";
-
+                img.src = 'https://amfnews.com/wp-content/uploads/2014/10/default-img-1000x600.gif';
             }
             card.appendChild(img);
 
@@ -67,6 +73,12 @@ async function fetchPage(page) {
             const release_year = document.createElement('h5');
             release_year.innerHTML = getYear(movies.results[x].release_date);
             card.appendChild(release_year);
+
+            //Genres
+            const result = await getGenre(movies.results[x].genre_ids);
+            const genres = document.createElement('div');
+            genres.innerHTML = result;
+            card.appendChild(genres);
 
             //Vote average
             const vote_average = document.createElement('h5');
@@ -79,100 +91,23 @@ async function fetchPage(page) {
             card.appendChild(overview);
 
             container.appendChild(card);
+            
+            
 
-            const result = await getGenre(movies.results[x].genre_ids);
-
-            console.log(result);
-
-            // return result;
-            // result.forEach(element => {
-            //     console.log(element);
-            // });
-            // .then(function(val) {
-            //     // you access the value from the promise here
-            //     // console.log(result);
-            //  });
-
-
+            //add videos
+            addVideo(movies.results[x].id);
+            //add reviews
+            addReview(movies.results[x].id);
+            //add similar
+            addSimilar(movies.results[x].id);
 
 
         }
+        $(".loader").fadeOut("slow");
+
     })
 
 }
-
-
-
-
-// function fetchPage(page) {
-//     const container = document.getElementById('container');
-
-//     var request = new XMLHttpRequest();
-//     request.open('GET', 'https://api.themoviedb.org/3/movie/now_playing?api_key=bc50218d91157b1ba4f142ef7baaa6a0&page=' + page, true);
-//     request.onload = function () {
-
-//         var movies = JSON.parse(this.response);
-//         console.log(movies.results);
-
-//         if (request.status >= 200 && request.status < 400) {
-
-//             for (var x = 0; x < movies.results.length; x++) {
-//                 const card = document.createElement('div');
-//                 card.setAttribute('class', 'card');
-
-//                 //title
-//                 const h1 = document.createElement('h3');
-//                 h1.textContent = movies.results[x].title;
-//                 card.appendChild(h1);
-
-//                 //poster
-//                 var img = document.createElement("img");
-//                 img.setAttribute('class', 'img');
-//                 if (movies.results[x].poster_path != null) {
-//                     img.src = "https://image.tmdb.org/t/p/original" + movies.results[x].poster_path;
-//                 }
-//                 else {
-//                     img.src = "https://amfnews.com/wp-content/uploads/2014/10/default-img-1000x600.gif";
-
-//                 }
-//                 card.appendChild(img);
-
-//                 //genre
-//                 // console.log(movies.results[x].genre_ids);
-//                 // console.log(getGenre(movies.results[x].genre_ids));
-//                 getGenre(movies.results[x].genre_ids)
-//                  .then(data =>  console.log("skata"+JSON.stringify(data))) // JSON-string from `response.json()` call
-//                 //  .catch(error => console.error(error));
-
-//                 //Release year
-//                 const release_year = document.createElement('h5');
-//                 release_year.innerHTML = getYear(movies.results[x].release_date);
-//                 card.appendChild(release_year);
-
-//                 //Vote average
-//                 const vote_average = document.createElement('h5');
-//                 vote_average.innerHTML = movies.results[x].vote_average;
-//                 card.appendChild(vote_average);
-
-//                 //Overview
-//                 const overview = document.createElement('p');
-//                 overview.innerHTML = movies.results[x].overview;
-//                 card.appendChild(overview);
-
-//                 container.appendChild(card);
-
-//             }
-//         } else {
-//             const errorMessage = document.createElement('errormsg');
-//             errorMessage.textContent = `Sorry, something went wrong!`;
-//             app.appendChild(errorMessage);
-//         }
-//     }
-
-//     request.send();
-
-// }
-
 
 function getYear(date) {
     var d = new Date(date);
@@ -181,9 +116,9 @@ function getYear(date) {
 }
 
 async function getGenre(genres) {
-    console.log(genres);
+
     let finalarray = [];
-    var url = 'https://api.themoviedb.org/3/genre/movie/list?api_key=bc50218d91157b1ba4f142ef7baaa6a0';
+    var url = baseUrl + 'genre/movie/list?api_key=bc50218d91157b1ba4f142ef7baaa6a0';
 
     let dataend = await fetch(url, {
         method: 'get',
@@ -206,12 +141,8 @@ async function getGenre(genres) {
             )
         });
 
-        console.log("finalarray**" + finalarray);
 
-        Promise.all(finalarray).then(function (results) {
-            console.log(results);
-            // Promise.resolve();
-            console.log("res**" + results);
+        return Promise.all(finalarray).then(function (results) {
             return results;
         });
 
@@ -221,96 +152,103 @@ async function getGenre(genres) {
     return dataend;
 }
 
-//  function  getGenre(genres) {
-//     console.log(genres);
-//     let finalarray = [];
-//     var url = 'https://api.themoviedb.org/3/genre/movie/list?api_key=bc50218d91157b1ba4f142ef7baaa6a0';
-
-//     var request = new XMLHttpRequest();
-//     request.open('GET', url , true);
-//     request.onload = function () {
 
 
-//         if (request.status >= 200 && request.status < 400) {
-
-//             var contact = JSON.parse(this.response);
-//                     // console.log("id:" + contact.genres[0].id);
-//                     genres.forEach(element => {
-//                         // console.log("number//" + element);
-//                         contact.genres.forEach(
-//                             (e2) => {
-//                                 if (element === e2.id)
-//                                     finalarray.push(e2.name);
-//                             }
-//                         )
-//                     });
-
-//                      finalarray.map(number => {
-//             console.log("****" + number);
-//         });
-//                     return finalarray
-//         }
-//     }
-
-//     request.send();
-
-// }
-
-// function getGenre() {
-
-//     var url = 'https://api.spacexdata.com/v2/launches/latest';
-
-//     var result = fetch(url, {
-//         method: 'get',
-//     }).then(function (response) {
-//         return response.json(); // pass the data as promise to next then block
-//     }).then(function (data) {
-//         var rocketId = data.rocket.rocket_id;
-
-//         console.log(rocketId, '\n');
-
-//         return fetch('https://api.spacexdata.com/v2/rockets/' + rocketId); // make a 2nd request and return a promise
-//     })
-//         .then(function (response) {
-//             return response.json();
-//         })
-//         .catch(function (error) {
-//             console.log('Request failed', error)
-//         })
-
-
-// }
-
-
+/*Search for movies*/
 function search_form(title) {
-    console.log("///" + title);
-    let data = { query: title };
-    // let headers = new Headers();
 
-    // headers.append('Content-Type', 'application/json');
-    // headers.append('Accept', 'application/json');
-  
-    // headers.append('Access-Control-Allow-Origin', 'https://api.themoviedb.org');
+    const url = baseUrl + 'search/movie?api_key=bc50218d91157b1ba4f142ef7baaa6a0&query=' + title;
+    fetch(url)
+        .then((resp) => resp.json())
+        .then(function (data) {
+            let authors = data.results;
+            console.log(authors);
+            return authors.map(function (author) {
+                let li = createNode('li'),
+                    img = createNode('img'),
+                    span = createNode('span');
+                // span.innerHTML = `${author.name.first} ${author.name.last}`;
+                append(li, img);
+                append(li, span);
+                append(ul, li);
+            })
+        })
+        .catch(function (error) {
+            console.log(JSON.stringify(error));
+        });
 
-    // fetch("https://api.themoviedb.org/3/search/movie?api_key=bc50218d91157b1ba4f142ef7baaa6a0", {
-    //     method: "POST",
-    //     mode: "no-cors",
-    //     headers: headers,
-    //     body: JSON.stringify(data)
-    // })
-    // .then(res => {
-    //     console.log("Request complete! response:",  res.json());
-    // });
-    $.ajax({
-        url: "http://api.themoviedb.org/3/search/movie?api_key=bc50218d91157b1ba4f142ef7baaa6a0",
-        type: "POST",
-        success: function (response) {
-            var resp = JSON.parse(response)
-            alert(resp.status);
-        },
-        error: function (xhr, status) {
-            alert("error");
-        }
-    });
+}
 
+
+
+
+/*View movie details*/
+
+function addVideo(movieid) {
+    const url = baseUrl + 'movie/' + movieid + '/videos?api_key=bc50218d91157b1ba4f142ef7baaa6a0';
+    fetch(url)
+        .then((resp) => resp.json())
+        .then(function (data) {
+            let authors = data.results;
+            console.log(authors);
+            return authors.map(function (author) {
+                let li = createNode('li'),
+                    img = createNode('img'),
+                    span = createNode('span');
+                // span.innerHTML = `${author.name.first} ${author.name.last}`;
+                append(li, img);
+                append(li, span);
+                append(ul, li);
+            })
+        })
+        .catch(function (error) {
+            console.log(JSON.stringify(error));
+        });
+}
+
+
+function addReview(movieid) {
+    let page = 1;
+    const url = baseUrl + 'movie/' + movieid + '/reviews?api_key=bc50218d91157b1ba4f142ef7baaa6a0&page=' + page;
+    fetch(url)
+        .then((resp) => resp.json())
+        .then(function (data) {
+            let authors = data.results;
+            console.log(authors);
+            return authors.map(function (author) {
+                let li = createNode('li'),
+                    img = createNode('img'),
+                    span = createNode('span');
+                // span.innerHTML = `${author.name.first} ${author.name.last}`;
+                append(li, img);
+                append(li, span);
+                append(ul, li);
+            })
+        })
+        .catch(function (error) {
+            console.log(JSON.stringify(error));
+        });
+}
+
+function addSimilar(movieid) {
+    let page = 1;
+    const url = baseUrl + 'movie/' + movieid + '/similar?api_key=bc50218d91157b1ba4f142ef7baaa6a0&page=' + page;
+    fetch(url)
+        .then((resp) => resp.json())
+        .then(function (data) {
+            let authors = data.results;
+            console.log("//similar//" + authors);
+            return authors.map(function (author) {
+                let li = createNode('li'),
+                    img = createNode('img'),
+                    span = createNode('span');
+                // span.innerHTML = `${author.name.first} ${author.name.last}`;
+                append(li, img);
+                append(li, span);
+                append(ul, li);
+            })
+        })
+        .catch(function (error) {
+            console.log(JSON.stringify(error));
+        });
 }
