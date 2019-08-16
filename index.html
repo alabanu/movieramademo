@@ -9,42 +9,51 @@
   <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
   <link rel="manifest" href="images/favicon/site.webmanifest">
   <link href="http://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" type="text/css" media="all" />
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      font-size: 16px;
-      width: 200px;
-    }
-  </style>
+
 </head>
 
 <body>
-  <div>
-    <div class="header">
-      <h1 id="logo">
-        <a href="index.html">MovieRama</a>
-      </h1>
+  <div class="wrapper">
 
-      <div id="sub-navigation">
-        <a href="#">NOW PLAYING</a>
-        <div id="search">
-          <form action="" method="GET">
-            <label for="search-field">SEARCH</label>
-            <!-- <input type="text" name="search field" value="Enter search here" id="search-field" class="blink search-field" /> -->
-            <input type="button" value="GO!" class="search-button" onclick="search_form('godfather');" />
-          </form>
-        </div>
+    <div class="header">
+      <div>
+        <a href="index.html" class="logom" title="Login">
+          <img src="../images/logo.jpg" />
+        </a>
       </div>
     </div>
-    <div id="main" style="margin-top:150px">
-      <div id="main-content">
-          <div id="container" class="container">
-              <div id="loading">
-                  <img id="loading-image" class="loader" src="images/loading.gif" alt="Loading..." />
-              </div>  
+    <div class="nav">
+      <div class="container">
+        <div class="search-box">
+          <div class="search-icon">
+            <i class="fa fa-search search-icon"></i>
+          </div>
+          <form action="" class="search-form">
+            <input type="text" placeholder="Search" id="search" autocomplete="off">
+          </form>
+          <svg class="search-border" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+            x="0px" y="0px" viewBox="0 0 671 111" style="enable-background:new 0 0 671 111;" xml:space="preserve">
+            <path class="border" d="M335.5,108.5h-280c-29.3,0-53-23.7-53-53v0c0-29.3,23.7-53,53-53h280"></path>
+            <path class="border" d="M335.5,108.5h280c29.3,0,53-23.7,53-53v0c0-29.3-23.7-53-53-53h-280"></path>
+          </svg>
+          <div class="go-icon">
+            <i class="fa fa-arrow-right"></i>
+          </div>
         </div>
       </div>
+      <!-- <input type="button" value="GO!" class="search-button" onclick="search_form('godfather');" /> -->
+    </div>
+    <div id="main">
+      <h1>Now playing</h1>
+      <div id="loading">
+        <img id="loading-image" class="loader" src="images/loading.gif" alt="Loading..." />
+      </div>
+      <ul class="cards" id="container">
+      </ul>
+      <!-- </div>
+      </div> -->
 
     </div>
     <div class="footer">
@@ -69,6 +78,30 @@
         });
       });
     });
+  </script>
+  <script>
+  $(document).ready(function(){
+    $("#search").focus(function() {
+      $(".search-box").addClass("border-searching");
+      $(".search-icon").addClass("si-rotate");
+    });
+    $("#search").blur(function() {
+      $(".search-box").removeClass("border-searching");
+      $(".search-icon").removeClass("si-rotate");
+    });
+    $("#search").keyup(function() {
+        if($(this).val().length > 0) {
+          $(".go-icon").addClass("go-in");
+        }
+        else {
+          $(".go-icon").removeClass("go-in");
+        }
+    });
+    $(".go-icon").click(function(){
+      $(".search-form").submit();
+    });
+});
+
   </script>
 </body>
 
