@@ -3,37 +3,39 @@ let page = 0;
 const container = document.getElementById('container');
 const baseUrl = 'https://api.themoviedb.org/3/';
 
-$(document).ready(function() {
- 
-       var stickyNavTop = $('.nav').offset().top;
-       
-       var stickyNav = function(){
-        var scrollTop = $(window).scrollTop(); 
-             
-        if (scrollTop > stickyNavTop) { 
+$(document).ready(function () {
+
+    var stickyNavTop = $('.nav').offset().top;
+
+    var stickyNav = function () {
+        var scrollTop = $(window).scrollTop();
+
+        if (scrollTop > stickyNavTop) {
             $('.nav').addClass('sticky');
         } else {
-            $('.nav').removeClass('sticky'); 
+            $('.nav').removeClass('sticky');
         }
     };
 
     stickyNav();
-   
-window.onload = function(e){ 
-    $(".loader").fadeIn("slow");
-    addPage(++page);
-}
 
-window.onscroll = function () {
-    stickyNav();
-    if (getScrollTop() < getDocumentHeight() - window.innerHeight) return;
-    addPage(++page);
-    $(".loader").fadeIn("slow");
-};
+    window.onload = function (e) {
+        $(".loader").fadeIn("slow");
+        addPage(++page);
+    }
+
+    var isActive = false; 
+    window.onscroll = function () {
+        stickyNav();
+        if (getScrollTop() < getDocumentHeight() - window.innerHeight) return;
+        isActive = true; 
+        addPage(++page);
+        $(".loader").fadeIn("slow");
+    };
 
 });
 
-/*In theaters*/
+//infinite scrolling
 function getDocumentHeight() {
     const body = document.body;
     const html = document.documentElement;
@@ -52,7 +54,7 @@ function addPage(page) {
     fetchPage(page);
 }
 
-
+/*In theaters*/
 async function fetchPage(page) {
 
     url = baseUrl + 'movie/now_playing?api_key=bc50218d91157b1ba4f142ef7baaa6a0&page=' + page;
@@ -61,62 +63,107 @@ async function fetchPage(page) {
         async: true,
     }).then(response => {
         return response.json();
-    }).then(async function (myJson) {
+    }).then(async (myJson) => {
 
         array = JSON.stringify(myJson);
         var movies = JSON.parse(array);
-        
-        
+
+
         for (var x = 0; x < movies.results.length; x++) {
             card = document.createElement('li');
-            card.setAttribute('class', 'cards_item');
-
+            card.className = 'cards_item';
+        
             const carddiv = document.createElement('div');
-            carddiv.setAttribute('class', 'card');
+            carddiv.className = 'card';
 
-            //title
-            const h1 = document.createElement('h3');
-            h1.textContent = movies.results[x].title;
-            carddiv.appendChild(h1);
-
+            //poster-wrap
+            const imagewrapdiv = document.createElement('div');
+            imagewrapdiv.className = 'poster-wrap';
             //poster
             const imagediv = document.createElement('div');
-            var img = document.createElement("img");
-            img.setAttribute('class', 'card_image');
+            imagediv.className = 'card_image_div';
+            const img = document.createElement("img");
+            img.className = 'card_image';
             if (movies.results[x].poster_path != null) {
                 img.src = 'https://image.tmdb.org/t/p/original' + movies.results[x].poster_path;
             }
             else {
                 img.src = 'https://amfnews.com/wp-content/uploads/2014/10/default-img-1000x600.gif';
+                img.height = 439;
+                img.width = 293;
             }
             imagediv.appendChild(img);
-            carddiv.appendChild(imagediv);
+            
+            imagewrapdiv.appendChild(imagediv);
 
+            //overview
+            const hovercover = document.createElement('div');
+            hovercover.className = 'hover-cover';
+            hovercover.setAttribute('style', 'display: none');
+            const hovercoversub = document.createElement('div');
+            hovercoversub.className = 'wrapper details';
+            const hovercoversubtitle = document.createElement('h2');
+            hovercoversubtitle.innerHTML="Overview";
+            hovercoversub.appendChild(hovercoversubtitle);
+            const overview = document.createElement('p');
+            overview.innerHTML = movies.results[x].overview;
+            hovercoversub.appendChild(overview);
+            hovercover.appendChild(hovercoversub);
+            imagewrapdiv.appendChild(hovercover);
+
+            carddiv.appendChild(imagewrapdiv);
+
+            //title
+            const h1 = document.createElement('h4');
+            h1.className = 'titlecls';
+            h1.textContent = movies.results[x].title;
+            carddiv.appendChild(h1);
+
+            //date_average div
+            const subdiv = document.createElement('div');
 
             //Release year
             const release_year = document.createElement('h5');
-            release_year.innerHTML = getYear(movies.results[x].release_date);
-            carddiv.appendChild(release_year);
-
-            //Genres
-            const result = await getGenre(movies.results[x].genre_ids);
-            const genres = document.createElement('div');
-            genres.innerHTML = result;
-            carddiv.appendChild(genres);
+            release_year.className ='relcls';
+            release_year.innerHTML = '<i class = "fas fa-calendar-alt fa-lg" aria-hidden="true"></i>&nbsp&nbsp' + getYear(movies.results[x].release_date);
+            // carddiv.appendChild(release_year);
 
             //Vote average
             const vote_average = document.createElement('h5');
-            vote_average.innerHTML = movies.results[x].vote_average;
-            carddiv.appendChild(vote_average);
+            vote_average.className ='votecls';
+            vote_average.innerHTML = '<i class = "fas fa-star fa-lg" aria-hidden="true"></i>&nbsp' + movies.results[x].vote_average;
+            subdiv.appendChild(release_year);
+            subdiv.appendChild(vote_average);
+            carddiv.appendChild(subdiv);
 
-            //Overview
-            const overview = document.createElement('p');
-            overview.innerHTML = movies.results[x].overview;
-            carddiv.appendChild(overview);
+            //Genres
+            const result = await getGenre(movies.results[x].genre_ids);
+            var str = result.toString()
+            var output = str.split(',').join(', ');
+
+            const genres = document.createElement('div');
+            genres.className = 'genrecls';
+            genres.innerHTML = '<i class = "fas fa-film fa-lg" aria-hidden="true"></i>&nbsp' + output;
+            carddiv.appendChild(genres);
+
+
+
+            //separator
+            const sep = document.createElement('hr');
+            sep.sclassName = 'sep';
+            carddiv.appendChild(sep);
+
+
+            const detailsbut = document.createElement('button');
+            detailsbut.appendChild(document.createTextNode("More Info"));
+            detailsbut.className = 'open-modal';
+            detailsbut.setAttribute('data-open', 'modal');
+
+            carddiv.appendChild(detailsbut);
 
             card.appendChild(carddiv);
-            
-            
+
+
 
             //add videos
             addVideo(movies.results[x].id);
@@ -128,7 +175,12 @@ async function fetchPage(page) {
             container.appendChild(card);
         }
         $(".loader").fadeOut("slow");
-        
+       
+        var s = document.createElement("script");
+        s.type = "text/javascript";
+        s.src = "js/modal.js";
+        $("body").append(s);
+        isActive = false;
 
     })
 
@@ -142,32 +194,28 @@ function getYear(date) {
 
 async function getGenre(genres) {
 
-    let finalarray = [];
+    let moviegenres = [];
     var url = baseUrl + 'genre/movie/list?api_key=bc50218d91157b1ba4f142ef7baaa6a0';
 
     let dataend = await fetch(url, {
         method: 'get',
         async: false,
-    }).then(function (res) {
+    }).then((res) => {
         return res.json();
-    }).then(function (myJson) {
-
-        const genre_array = JSON.stringify(myJson);
-        // console.log("SS" + genre_array);  //return ARRAY
+    }).then((genreJson) => {
+        const genre_array = JSON.stringify(genreJson);
         var contact = JSON.parse(genre_array);
-        // console.log("id:" + contact.genres[0].id);
         genres.forEach(element => {
-            // console.log("number//" + element);
             contact.genres.forEach(
                 (e2) => {
                     if (element === e2.id)
-                        finalarray.push(e2.name);
+                        moviegenres.push(e2.name);
                 }
             )
         });
 
 
-        return Promise.all(finalarray).then(function (results) {
+        return Promise.all(moviegenres).then((results) => {
             return results;
         });
 
@@ -185,7 +233,7 @@ function search_form(title) {
     const url = baseUrl + 'search/movie?api_key=bc50218d91157b1ba4f142ef7baaa6a0&query=' + title;
     fetch(url)
         .then((resp) => resp.json())
-        .then(function (data) {
+        .then((data) => {
             let authors = data.results;
             console.log(authors);
             return authors.map(function (author) {
@@ -198,7 +246,7 @@ function search_form(title) {
                 append(ul, li);
             })
         })
-        .catch(function (error) {
+        .catch((error) => {
             console.log(JSON.stringify(error));
         });
 

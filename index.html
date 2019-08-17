@@ -9,26 +9,32 @@
   <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
   <link rel="manifest" href="images/favicon/site.webmanifest">
   <link href="http://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
-  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" type="text/css" media="all" />
+
 
 </head>
 
 <body>
+
+  <!-- <div class="btn-group">
+        <button type="button" class="open-modal" data-open="modal">
+          Launch first modal
+        </button>
+      </div>  -->
+
   <div class="wrapper">
 
     <div class="header">
-      <div>
-        <a href="index.html" class="logom" title="Login">
+        <a href="index.html" class="logo">
           <img src="../images/logo.jpg" />
         </a>
-      </div>
     </div>
     <div class="nav">
       <div class="container">
         <div class="search-box">
           <div class="search-icon">
-            <i class="fa fa-search search-icon"></i>
+            <i class="fas fa-search search-icon"></i>
           </div>
           <form action="" class="search-form">
             <input type="text" placeholder="Search" id="search" autocomplete="off">
@@ -46,14 +52,13 @@
       <!-- <input type="button" value="GO!" class="search-button" onclick="search_form('godfather');" /> -->
     </div>
     <div id="main">
-      <h1>Now playing</h1>
+      <h1 class="headtitle">Now playing</h1>
       <div id="loading">
         <img id="loading-image" class="loader" src="images/loading.gif" alt="Loading..." />
       </div>
       <ul class="cards" id="container">
+
       </ul>
-      <!-- </div>
-      </div> -->
 
     </div>
     <div class="footer">
@@ -67,6 +72,7 @@
   <script src="js/jquery.showYtVideo.js"></script>
   <!-- link to java script-->
   <script src="js/script.js"></script>
+
   <script>
 
     jQuery(document).ready(function ($) {
@@ -80,29 +86,33 @@
     });
   </script>
   <script>
-  $(document).ready(function(){
-    $("#search").focus(function() {
-      $(".search-box").addClass("border-searching");
-      $(".search-icon").addClass("si-rotate");
-    });
-    $("#search").blur(function() {
-      $(".search-box").removeClass("border-searching");
-      $(".search-icon").removeClass("si-rotate");
-    });
-    $("#search").keyup(function() {
-        if($(this).val().length > 0) {
+    $(document).ready(function () {
+      $("#search").focus(function () {
+        $(".search-box").addClass("border-searching");
+        $(".search-icon").addClass("si-rotate");
+      });
+      $("#search").blur(function () {
+        $(".search-box").removeClass("border-searching");
+        $(".search-icon").removeClass("si-rotate");
+      });
+      $("#search").keyup(function () {
+        if ($(this).val().length > 0) {
           $(".go-icon").addClass("go-in");
         }
         else {
           $(".go-icon").removeClass("go-in");
         }
+      });
+      $(".go-icon").click(function () {
+        $(".search-form").submit();
+      });
     });
-    $(".go-icon").click(function(){
-      $(".search-form").submit();
-    });
-});
 
   </script>
+  <!-- <script  src="js/modal.js" ></script> -->
 </body>
+
+
+
 
 </html>

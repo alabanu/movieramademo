@@ -18,7 +18,7 @@
         }, options);
 
         var modal = $('<div class="modal size-' + options.modalSize + '"></div>');
-        var closeButton = $('<div class="modal-close">&#215;</div>');
+        var closeButton = $('<div class="modal-close">×</div>');
 
         if (options.closeButton) {
             closeButton.appendTo(modal);   
