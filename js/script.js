@@ -24,11 +24,10 @@ $(function() {
         addPage(++page);
     }
 
-    var isActive = false; 
+     
     window.onscroll = function () {
         stickyNav();
         if (getScrollTop() < getDocumentHeight() - window.innerHeight) return;
-        isActive = true; 
         addPage(++page);
         $(".loader").fadeIn("slow");
     };
@@ -155,6 +154,7 @@ async function fetchPage(page) {
 
             const detailsbut = document.createElement('button');
             detailsbut.appendChild(document.createTextNode("More Info"));
+            detailsbut.id = movies.results[x].id;
             detailsbut.className = 'open-modal';
             detailsbut.setAttribute('data-open', 'modal');
 
@@ -162,25 +162,19 @@ async function fetchPage(page) {
 
             card.appendChild(carddiv);
 
-            
-           
 
-            //add videos
-            addVideo(movies.results[x].id);
-            //add reviews
-            addReview(movies.results[x].id);
-            //add similar
-            addSimilar(movies.results[x].id);
+            // //add videos
+            // addVideo(movies.results[x].id);
+            // //add reviews
+            // addReview(movies.results[x].id);
+            // //add similar
+            // addSimilar(movies.results[x].id);
 
             container.appendChild(card);
         }
         $(".loader").fadeOut("slow");
        
-        // var s = document.createElement("script");
-        // s.type = "text/javascript";
-        // s.src = "js/modal.js";
-        // $("body").append(s);
-        // isActive = false;
+    
 
     })
 
@@ -257,22 +251,27 @@ function search_form(title) {
 
 /*View movie details*/
 
+function getTitle(movieid) {
+   
+    const url = baseUrl + 'movie/' + movieid + '?api_key=bc50218d91157b1ba4f142ef7baaa6a0';
+    fetch(url)
+        .then((resp) => resp.json())
+        .then(function (data) {
+            document.querySelector('#modaltitle span').innerHTML = data.title ;
+        })
+        .catch(function (error) {
+            console.log(JSON.stringify(error));
+        });
+}
+
+
 function addVideo(movieid) {
     const url = baseUrl + 'movie/' + movieid + '/videos?api_key=bc50218d91157b1ba4f142ef7baaa6a0';
     fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
-            let authors = data.results;
-            console.log(authors);
-            return authors.map(function (author) {
-                let li = createNode('li'),
-                    img = createNode('img'),
-                    span = createNode('span');
-                // span.innerHTML = `${author.name.first} ${author.name.last}`;
-                append(li, img);
-                append(li, span);
-                append(ul, li);
-            })
+            document.querySelector('.trailer').innerHTML = '<h3>Trailer</h3> <iframe id="videoArea" width="350" height="250" src="http://www.youtube.com/embed/'+ data.results[0].key +'" frameborder="0" allowfullscreen></iframe>';
+            
         })
         .catch(function (error) {
             console.log(JSON.stringify(error));
@@ -283,20 +282,15 @@ function addVideo(movieid) {
 function addReview(movieid) {
     let page = 1;
     const url = baseUrl + 'movie/' + movieid + '/reviews?api_key=bc50218d91157b1ba4f142ef7baaa6a0&page=' + page;
+    document.querySelector('.review').innerHTML ='<h3>User Reviews</h3>';
     fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
-            let authors = data.results;
-            console.log(authors);
-            return authors.map(function (author) {
-                let li = createNode('li'),
-                    img = createNode('img'),
-                    span = createNode('span');
-                // span.innerHTML = `${author.name.first} ${author.name.last}`;
-                append(li, img);
-                append(li, span);
-                append(ul, li);
+            let reviews = data.results;
+            return reviews.map(function (data) {
+                document.querySelector('.review').innerHTML = document.querySelector('.review').innerHTML + '<div class="user-comments"><div class="comment-meta">by '+ data.author +'<span></span></div> <div class = "review-cont"> <p>'+data.content+'</p></div></div>';
             })
+            
         })
         .catch(function (error) {
             console.log(JSON.stringify(error));
@@ -305,21 +299,17 @@ function addReview(movieid) {
 
 function addSimilar(movieid) {
     let page = 1;
+    document.querySelector('.similar').innerHTML = '<h3>Similar</h3>';
     const url = baseUrl + 'movie/' + movieid + '/similar?api_key=bc50218d91157b1ba4f142ef7baaa6a0&page=' + page;
     fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
-            let authors = data.results;
-            console.log("//similar//" + authors);
-            return authors.map(function (author) {
-                let li = createNode('li'),
-                    img = createNode('img'),
-                    span = createNode('span');
-                // span.innerHTML = `${author.name.first} ${author.name.last}`;
-                append(li, img);
-                append(li, span);
-                append(ul, li);
+            let similar = data.results;
+            return similar.map(function (data) {
+                console.log("similar//"+data.title);
+                document.querySelector('.similar').innerHTML = document.querySelector('.similar').innerHTML + '<a href="">'+data.title+'</a> ,';
             })
+            document.querySelector('.similar').innerHTML.substring(0, str.length - 1);
         })
         .catch(function (error) {
             console.log(JSON.stringify(error));

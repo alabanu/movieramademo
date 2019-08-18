@@ -20,9 +20,9 @@
   <div class="wrapper">
 
     <div class="header">
-        <a href="index.html" class="logo">
-          <img src="../images/logo.jpg" />
-        </a>
+      <a href="index.html" class="logo">
+        <img src="../images/logo.jpg" />
+      </a>
     </div>
     <div class="nav">
       <div class="container">
@@ -55,53 +55,61 @@
       </ul>
 
     </div>
-    <div class="footer">
-        <div class="modal" id="modal"> <div class="modal-dialog"><header class="modal-header" id = "modaltitle"> <button class="close-modal" aria-label="close modal" data-close> </button>            </header>            <section class="modal-content">              <p><strong>Press ?, ESC, or click outside of the modal to close it</strong></p>              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo repellendus reprehenderit accusamus totam ratione! Nesciunt, nemo dolorum recusandae ad ex nam similique dolorem ab perspiciatis qui. Facere, dignissimos. Nemo, ea.</p>            </section>          </div>
+    <div>
+      <div class="modal" id="modal">
+        <div class="modal-dialog">
+          <header class="modal-header" id="modaltitle">
+            <span>Title</span>
+            <button class="close-modal" aria-label="close modal" data-close> </button>
+          </header>
+          <section class="modal-content">
+              <div class="modal-container">
+                  <div class="row trailer">
+                    <div class="cell">My Logo</div>
+                  </div>
+                  <div class="row review">
+                    <div class="cell">My Nav</div>
+                  </div>
+                  <div class="row similar">
+                    <div class="cell">Base</div>
+                  </div>
+                </div>
+          </section>
+        </div>
+      </div>
     </div>
-  </div>
 
-  
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-  <script src="js/jquery.showYtVideo.js"></script>
-  <script src="js/script.js"></script>
 
-  <script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"></script>
+    <script src="js/script.js"></script>
 
-    jQuery(document).ready(function ($) {
-      $('.show-video').on('click', function () {
-        var id = this.id;
 
-        $.showYtVideo({
-          videoId: id
+    <script>
+      $(document).ready(function () {
+        $("#search").focus(function () {
+          $(".search-box").addClass("border-searching");
+          $(".search-icon").addClass("si-rotate");
+        });
+        $("#search").blur(function () {
+          $(".search-box").removeClass("border-searching");
+          $(".search-icon").removeClass("si-rotate");
+        });
+        $("#search").keyup(function () {
+          if ($(this).val().length > 0) {
+            $(".go-icon").addClass("go-in");
+          }
+          else {
+            $(".go-icon").removeClass("go-in");
+          }
+        });
+        $(".go-icon").click(function () {
+          $(".search-form").submit();
         });
       });
-    });
-  </script>
-  <script>
-    $(document).ready(function () {
-      $("#search").focus(function () {
-        $(".search-box").addClass("border-searching");
-        $(".search-icon").addClass("si-rotate");
-      });
-      $("#search").blur(function () {
-        $(".search-box").removeClass("border-searching");
-        $(".search-icon").removeClass("si-rotate");
-      });
-      $("#search").keyup(function () {
-        if ($(this).val().length > 0) {
-          $(".go-icon").addClass("go-in");
-        }
-        else {
-          $(".go-icon").removeClass("go-in");
-        }
-      });
-      $(".go-icon").click(function () {
-        $(".search-form").submit();
-      });
-    });
 
-  </script>
-  <script type="text/javascript" src="js/modal.js" ></script>
+    </script>
+    <script type="text/javascript" src="js/modal.js"></script>
 
 </body>
 
