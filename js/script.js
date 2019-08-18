@@ -3,7 +3,7 @@ let page = 0;
 const container = document.getElementById('container');
 const baseUrl = 'https://api.themoviedb.org/3/';
 
-$(function() {
+$(function () {
 
     var stickyNavTop = $('.nav').offset().top;
 
@@ -24,7 +24,7 @@ $(function() {
         addPage(++page);
     }
 
-     
+
     window.onscroll = function () {
         stickyNav();
         if (getScrollTop() < getDocumentHeight() - window.innerHeight) return;
@@ -71,7 +71,7 @@ async function fetchPage(page) {
         for (var x = 0; x < movies.results.length; x++) {
             card = document.createElement('li');
             card.className = 'cards_item';
-        
+
             const carddiv = document.createElement('div');
             carddiv.className = 'card';
 
@@ -92,7 +92,7 @@ async function fetchPage(page) {
                 img.width = 293;
             }
             imagediv.appendChild(img);
-            
+
             imagewrapdiv.appendChild(imagediv);
 
             //overview
@@ -102,7 +102,7 @@ async function fetchPage(page) {
             const hovercoversub = document.createElement('div');
             hovercoversub.className = 'wrapper details';
             const hovercoversubtitle = document.createElement('h2');
-            hovercoversubtitle.innerHTML="Overview";
+            hovercoversubtitle.innerHTML = "Overview";
             hovercoversub.appendChild(hovercoversubtitle);
             const overview = document.createElement('p');
             overview.innerHTML = movies.results[x].overview;
@@ -123,12 +123,12 @@ async function fetchPage(page) {
 
             //Release year
             const release_year = document.createElement('h5');
-            release_year.className ='relcls';
+            release_year.className = 'relcls';
             release_year.innerHTML = '<i class = "fas fa-calendar-alt fa-lg" aria-hidden="true"></i>&nbsp&nbsp' + getYear(movies.results[x].release_date);
-            
+
             //Vote average
             const vote_average = document.createElement('h5');
-            vote_average.className ='votecls';
+            vote_average.className = 'votecls';
             vote_average.innerHTML = '<i class = "fas fa-star fa-lg" aria-hidden="true"></i>&nbsp' + movies.results[x].vote_average;
             subdiv.appendChild(release_year);
             subdiv.appendChild(vote_average);
@@ -173,8 +173,8 @@ async function fetchPage(page) {
             container.appendChild(card);
         }
         $(".loader").fadeOut("slow");
-       
-    
+
+
 
     })
 
@@ -252,12 +252,12 @@ function search_form(title) {
 /*View movie details*/
 
 function getTitle(movieid) {
-   
+
     const url = baseUrl + 'movie/' + movieid + '?api_key=bc50218d91157b1ba4f142ef7baaa6a0';
     fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
-            document.querySelector('#modaltitle span').innerHTML = data.title ;
+            document.querySelector('#modaltitle span').innerHTML = data.title;
         })
         .catch(function (error) {
             console.log(JSON.stringify(error));
@@ -270,8 +270,8 @@ function addVideo(movieid) {
     fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
-            document.querySelector('.trailer').innerHTML = '<h3>Trailer</h3> <iframe id="videoArea" width="350" height="250" src="http://www.youtube.com/embed/'+ data.results[0].key +'" frameborder="0" allowfullscreen></iframe>';
-            
+            document.querySelector('.trailer').innerHTML = '<h3>Trailer</h3> <iframe id="videoArea" width="750" height="350" src="http://www.youtube.com/embed/' + data.results[0].key + '" frameborder="0" allowfullscreen></iframe>';
+
         })
         .catch(function (error) {
             console.log(JSON.stringify(error));
@@ -282,15 +282,15 @@ function addVideo(movieid) {
 function addReview(movieid) {
     let page = 1;
     const url = baseUrl + 'movie/' + movieid + '/reviews?api_key=bc50218d91157b1ba4f142ef7baaa6a0&page=' + page;
-    document.querySelector('.review').innerHTML ='<h3>User Reviews</h3>';
+    document.querySelector('.review').innerHTML = '<h3>User Reviews</h3>';
     fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
             let reviews = data.results;
             return reviews.map(function (data) {
-                document.querySelector('.review').innerHTML = document.querySelector('.review').innerHTML + '<div class="user-comments"><div class="comment-meta">by '+ data.author +'<span></span></div> <div class = "review-cont"> <p>'+data.content+'</p></div></div>';
+                document.querySelector('.review').innerHTML = document.querySelector('.review').innerHTML + '<div class="user-comments"><div class="comment-meta">by ' + data.author + '<span></span></div> <div class = "review-cont"> <p>' + data.content + '</p></div></div>';
             })
-            
+
         })
         .catch(function (error) {
             console.log(JSON.stringify(error));
@@ -299,17 +299,37 @@ function addReview(movieid) {
 
 function addSimilar(movieid) {
     let page = 1;
-    document.querySelector('.similar').innerHTML = '<h3>Similar</h3>';
+    document.querySelector('.similar').innerHTML = '<h3>Similar Movies</h3>';
+
+    const carousel = document.createElement('div');
+    carousel.className = 'slider';
+
     const url = baseUrl + 'movie/' + movieid + '/similar?api_key=bc50218d91157b1ba4f142ef7baaa6a0&page=' + page;
     fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
             let similar = data.results;
             return similar.map(function (data) {
-                console.log("similar//"+data.title);
-                document.querySelector('.similar').innerHTML = document.querySelector('.similar').innerHTML + '<a href="">'+data.title+'</a> ,';
+                console.log("similar//" + data.title);
+                const imagediv = document.createElement('div');
+                imagediv.className = 'slide';
+                const img = document.createElement("img");
+                img.className = 'card_image';
+                if (data.poster_path != null) {
+                    img.src = 'https://image.tmdb.org/t/p/original' + data.poster_path;
+                   
+                }
+                else {
+                    img.src = 'https://amfnews.com/wp-content/uploads/2014/10/default-img-1000x600.gif';
+                    img.height = 50;
+                    img.width = 50;
+                }
+                imagediv.appendChild(img);
+                carousel.appendChild(imagediv);
+
+                document.querySelector('.similar').appendChild(carousel);
             })
-            document.querySelector('.similar').innerHTML.substring(0, str.length - 1);
+        
         })
         .catch(function (error) {
             console.log(JSON.stringify(error));
