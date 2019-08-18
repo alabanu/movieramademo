@@ -3,7 +3,7 @@ let page = 0;
 const container = document.getElementById('container');
 const baseUrl = 'https://api.themoviedb.org/3/';
 
-$(document).ready(function () {
+$(function() {
 
     var stickyNavTop = $('.nav').offset().top;
 
@@ -99,7 +99,7 @@ async function fetchPage(page) {
             //overview
             const hovercover = document.createElement('div');
             hovercover.className = 'hover-cover';
-            hovercover.setAttribute('style', 'display: none');
+            // hovercover.style = 'display: none';
             const hovercoversub = document.createElement('div');
             hovercoversub.className = 'wrapper details';
             const hovercoversubtitle = document.createElement('h2');
@@ -126,8 +126,7 @@ async function fetchPage(page) {
             const release_year = document.createElement('h5');
             release_year.className ='relcls';
             release_year.innerHTML = '<i class = "fas fa-calendar-alt fa-lg" aria-hidden="true"></i>&nbsp&nbsp' + getYear(movies.results[x].release_date);
-            // carddiv.appendChild(release_year);
-
+            
             //Vote average
             const vote_average = document.createElement('h5');
             vote_average.className ='votecls';
@@ -163,7 +162,8 @@ async function fetchPage(page) {
 
             card.appendChild(carddiv);
 
-
+            
+           
 
             //add videos
             addVideo(movies.results[x].id);
@@ -176,11 +176,11 @@ async function fetchPage(page) {
         }
         $(".loader").fadeOut("slow");
        
-        var s = document.createElement("script");
-        s.type = "text/javascript";
-        s.src = "js/modal.js";
-        $("body").append(s);
-        isActive = false;
+        // var s = document.createElement("script");
+        // s.type = "text/javascript";
+        // s.src = "js/modal.js";
+        // $("body").append(s);
+        // isActive = false;
 
     })
 
