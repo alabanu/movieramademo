@@ -310,14 +310,14 @@ function addSimilar(movieid) {
         .then(function (data) {
             let similar = data.results;
             return similar.map(function (data) {
-                console.log("similar//" + data.title);
+
                 const imagediv = document.createElement('div');
                 imagediv.className = 'slide';
                 const img = document.createElement("img");
-                img.className = 'card_image';
+                img.className = 'card_image_similar';
                 if (data.poster_path != null) {
                     img.src = 'https://image.tmdb.org/t/p/original' + data.poster_path;
-                   
+
                 }
                 else {
                     img.src = 'https://amfnews.com/wp-content/uploads/2014/10/default-img-1000x600.gif';
@@ -325,11 +325,15 @@ function addSimilar(movieid) {
                     img.width = 50;
                 }
                 imagediv.appendChild(img);
+
+                const titlelink = document.createElement('div');
+                titlelink.innerHTML = '<a href = "#" style = "font-size: 12px;">' + data.title + '</a>';
+                imagediv.appendChild(titlelink);
                 carousel.appendChild(imagediv);
 
                 document.querySelector('.similar').appendChild(carousel);
             })
-        
+
         })
         .catch(function (error) {
             console.log(JSON.stringify(error));

@@ -625,13 +625,18 @@ img {
 
 .slider {
   width: 750px;
-  height: 35vh;
   display: flex;
   overflow-x: auto;
   margin-top: 15px;
 }
 .slide {
-  width: 300px;
+  width: 150px;
   flex-shrink: 0;
   height: 100%;
+}
+
+.card_image_similar {
+  width: 90%;
+  max-height: 100%;
+  vertical-align: middle;
 }
