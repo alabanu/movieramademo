@@ -26,7 +26,7 @@
           <div class="search-icon">
             <i class="fas fa-search search-icon"></i>
           </div>
-          <form class="search-form"  onSubmit="return false;">
+          <form class="search-form"  onSubmit="return false;" id="position">
             <input type="text" placeholder="Search" id="search" autocomplete="off">
           </form>
           <svg class="search-border" version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -49,6 +49,7 @@
       <ul class="cards" id="container">
       </ul>
     </div>
+    <button id="goTop">top</button>
     <div>
       <div class="modal" id="modal">
         <div class="modal-dialog">
@@ -78,7 +79,7 @@
     <script src="js/script.js"></script>
     <script src="js/script_search.js"></script>
     <script type="text/javascript" src="js/modal.js"></script>
-
+    <script type="text/javascript" src="js/scrollToTop.js"></script>
 </body>
 
 </html>

@@ -9,7 +9,6 @@ $(document).ready(function () {
     });
 
     $("#search").keyup(debounce(function () {
-        
         if ($(this).val() != ""){
             search_form($(this).val());
         }
@@ -22,26 +21,20 @@ $(document).ready(function () {
     }, 100));
 
     $(".go-icon").click(function () {
-        search_form("god");
+        var movie_title = $('#search').val();
+        search_form(movie_title);
     });
 
+    /*Search for movies*/
     function search_form(title) {
-        console.log("calll search");
+        console.log("call search");
         const url = baseUrl + 'search/movie?api_key=bc50218d91157b1ba4f142ef7baaa6a0&query=' + title;
+        document.querySelector('.headtitle').innerHTML = 'Results for "'+title+'"';
+        document.querySelector('#container').innerHTML = "";
         fetch(url)
             .then((resp) => resp.json())
-            .then((data) => {
-                let authors = data.results;
-                console.log(authors);
-                return authors.map(function (author) {
-                    // let li = createNode('li'),
-                    //     img = createNode('img'),
-                    //     span = createNode('span');
-                    // // span.innerHTML = `${author.name.first} ${author.name.last}`;
-                    // append(li, img);
-                    // append(li, span);
-                    // append(ul, li);
-                })
+            .then(async (myJson) => {
+                nowplaying(myJson);
             })
             .catch((error) => {
                 console.log(JSON.stringify(error));

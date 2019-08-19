@@ -2,6 +2,7 @@
 let page = 0;
 const container = document.getElementById('container');
 const baseUrl = 'https://api.themoviedb.org/3/';
+let total_pages = 1;
 
 function debounce(func, wait, immediate) {
 
@@ -46,8 +47,15 @@ $(function () {
     window.onscroll = debounce(function () {
         stickyNav();
         if (getScrollTop() < getDocumentHeight() - window.innerHeight) return;
-        fetchPage(++page);
-        $(".loader").fadeIn("slow");
+        if (page < total_pages) {
+            fetchPage(++page);
+            $(".loader").fadeIn("slow");
+        }
+        else {
+            console.log("innnn");
+            $(".loader").fadeOut("slow");
+        }
+       
     }, 300);
 
 });
@@ -83,12 +91,14 @@ async function fetchPage(page) {
         nowplaying(myJson);
     })
 
+
 }
 
 async function nowplaying(myJson) {
     array = JSON.stringify(myJson);
     var movies = JSON.parse(array);
-
+    console.log("length:" + movies.results.length);
+    total_pages = movies.total_pages;
     for (var x = 0; x < movies.results.length; x++) {
         card = document.createElement('li');
         card.className = 'cards_item';
@@ -229,30 +239,30 @@ async function getGenre(genres) {
 
 
 
-/*Search for movies*/
-function search_form(title) {
-    console.log("calll search");
-    const url = baseUrl + 'search/movie?api_key=bc50218d91157b1ba4f142ef7baaa6a0&query=' + title;
-    fetch(url)
-        .then((resp) => resp.json())
-        .then((data) => {
-            let authors = data.results;
-            console.log(authors);
-            return authors.map(function (author) {
-                // let li = createNode('li'),
-                //     img = createNode('img'),
-                //     span = createNode('span');
-                // // span.innerHTML = `${author.name.first} ${author.name.last}`;
-                // append(li, img);
-                // append(li, span);
-                // append(ul, li);
-            })
-        })
-        .catch((error) => {
-            console.log(JSON.stringify(error));
-        });
+// /*Search for movies*/
+// function search_form(title) {
+//     console.log("calll search");
+//     const url = baseUrl + 'search/movie?api_key=bc50218d91157b1ba4f142ef7baaa6a0&query=' + title;
+//     fetch(url)
+//         .then((resp) => resp.json())
+//         .then((data) => {
+//             let authors = data.results;
+//             console.log(authors);
+//             return authors.map(function (author) {
+//                 // let li = createNode('li'),
+//                 //     img = createNode('img'),
+//                 //     span = createNode('span');
+//                 // // span.innerHTML = `${author.name.first} ${author.name.last}`;
+//                 // append(li, img);
+//                 // append(li, span);
+//                 // append(ul, li);
+//             })
+//         })
+//         .catch((error) => {
+//             console.log(JSON.stringify(error));
+//         });
 
-}
+// }
 
 
 
@@ -278,7 +288,7 @@ function addVideo(movieid) {
     fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
-            document.querySelector('.trailer').innerHTML = '<h3>Trailer</h3> <iframe id="videoArea" width="750" height="350" src="http://www.youtube.com/embed/' + data.results[0].key + '" frameborder="0" allowfullscreen></iframe>';
+            document.querySelector('.trailer').innerHTML = '<h3>Trailer</h3> <iframe id="videoArea" class="resp-iframe" src="http://www.youtube.com/embed/' + data.results[0].key + '" frameborder="0" allowfullscreen></iframe>';
 
         })
         .catch(function (error) {
