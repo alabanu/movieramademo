@@ -423,10 +423,10 @@ img {
 
 .cards {
   list-style: none;
-  --auto-grid-min-size: 16rem;
+  --auto-grid-min-size: 14rem;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(var(--auto-grid-min-size), 1fr));
-  grid-gap: 2rem;
+  grid-gap: 1rem;
 }
 
 .cards_item {
@@ -444,11 +444,11 @@ img {
   white-space: nowrap;
 }
 
-.titlecls:hover {
+/* .titlecls:hover {
   text-overflow: clip;
   white-space: normal;
   word-break: break-all;
-}
+} */
 
 .fa-star {
   color: goldenrod;
@@ -467,11 +467,11 @@ img {
   font-family: Verdana, Arial, sans-serif;
 }
 
-.genrecls:hover {
+/* .genrecls:hover {
   text-overflow: clip;
   white-space: normal;
   word-break: break-all;
-}
+} */
 
 .fa-calendar-alt {
   color: rgba(44, 166, 85, 0.76);
