@@ -288,7 +288,7 @@ function addVideo(movieid) {
     fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
-            document.querySelector('.trailer').innerHTML = '<h3>Trailer</h3> <iframe id="videoArea" class="resp-iframe" src="http://www.youtube.com/embed/' + data.results[0].key + '" frameborder="0" allowfullscreen></iframe>';
+            document.querySelector('.trailer').innerHTML = '<h3>Trailer</h3> <iframe id="videoArea" class="resp-iframe" src="https://www.youtube.com/embed/' + data.results[0].key + '" frameborder="0" allowfullscreen></iframe>';
 
         })
         .catch(function (error) {
