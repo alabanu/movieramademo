@@ -372,8 +372,6 @@ img {
   visibility: hidden;
   opacity: 0;
   transition: all 0.35s ease-in;
-  
-  
 }
 
 .modal.is-visible {
@@ -446,7 +444,7 @@ img {
   white-space: nowrap;
 }
 
-.resp-iframe{
+.resp-iframe {
   position: relative;
   overflow: hidden;
   padding-top: 56.25%;
@@ -628,7 +626,7 @@ img {
   color: #27aae1;
   border-bottom: 1px solid;
   margin-top: 10px;
-  
+  padding-bottom: 5px;
 }
 
 .slider {
@@ -636,6 +634,7 @@ img {
   overflow-x: auto;
   margin-top: 15px;
 }
+
 .slide {
   width: 150px;
   flex-shrink: 0;
@@ -649,21 +648,48 @@ img {
 }
 
 #goTop {
-  position:fixed;
-  z-index:999;
-  right:15px;
-  top:95%;
-  transform:translateY(-95%);
-  padding:20px;
-  color:#fff;
-  background:rgba(27, 25, 25, 0.3);
-  border:none;
-  opacity:0;
-  cursor:pointer;
+  position: fixed;
+  z-index: 999;
+  right: 15px;
+  top: 95%;
+  transform: translateY(-95%);
+  padding: 20px;
+  color: #fff;
+  background: rgba(27, 25, 25, 0.3);
+  border: none;
+  opacity: 0;
+  cursor: pointer;
   transition: opacity 0.4s linear;
-  outline:0;
+  outline: 0;
   border-radius: 50%;
 }
+
 #goTop.is-visible {
-  opacity:1;
+  opacity: 1;
+}
+
+.review-cont {
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+.review-cont article {
+  position: relative;
+  border: 1px solid #999;
+  height: auto;
+  max-height: 105px;
+  overflow: hidden;
+  -webkit-transition: all .5s ease-in-out;
+  -moz-transition: all .5s ease-in-out;
+  transition: all .5s ease-in-out;
+}
+
+.review-cont article:hover {
+  background: #dadada;
+}
+
+.review-cont article.expand {
+  max-height: 900px;
+  /* max-height: 900px; */
 }

@@ -306,7 +306,7 @@ function addReview(movieid) {
         .then(function (data) {
             let reviews = data.results;
             return reviews.map(function (data) {
-                document.querySelector('.review').innerHTML = document.querySelector('.review').innerHTML + '<div class="user-comments"><div class="comment-meta">by ' + data.author + '<span></span></div> <div class = "review-cont"> <p>' + data.content + '</p></div></div>';
+                document.querySelector('.review').innerHTML = document.querySelector('.review').innerHTML + '<div class="user-comments"><div class="comment-meta"><i class="fas fa-user"></i>&nbspby ' + data.author + '<span></span></div> <div class = "review-cont"> <article>' + data.content + '</article></div></div>';
             })
 
         })
@@ -357,3 +357,15 @@ function addSimilar(movieid) {
             console.log(JSON.stringify(error));
         });
 }
+
+//http://jsfiddle.net/SqJ53/2/
+// document.addEventListener("click", e => {
+//     console.log("innnnnnnnn");
+//     article = document.querySelector(".review-cont article");
+//     if (e.target == article) {
+//         console.log("after");
+//         $(this).toggleClass("expand");
+//     }
+//     });
+
+
