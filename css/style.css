@@ -620,6 +620,8 @@ img {
 .user-comments {
   font-size: 15px;
   margin-top: 15px;
+  display: block;
+  overflow-x: auto;
 }
 
 .row h3 {
@@ -630,7 +632,6 @@ img {
 }
 
 .slider {
-
   display: flex;
   overflow-x: auto;
   margin-top: 15px;
