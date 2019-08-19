@@ -1,9 +1,9 @@
 var interval = setInterval(function () {
     if (document.readyState === 'complete') {
-        clearInterval(1000);
+        clearInterval(100);
         onReady();
     }
-}, 1000);
+}, 100);
 
 
 function onReady() {
@@ -52,8 +52,10 @@ function onReady() {
 
 
     var posters = document.querySelectorAll(".poster-wrap");
+    
     posters
         .forEach(poster => {
+            
             var hovercover = poster.parentElement.querySelector(".hover-cover");
             poster.addEventListener('mouseover', () => {
                 hovercover.classList.add("show");
