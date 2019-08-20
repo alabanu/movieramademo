@@ -1,22 +1,24 @@
 var interval = setInterval(function () {
+    displayposterhover();
     if (document.readyState === 'complete') {
-        clearInterval(100);
+        clearInterval(1000);
         onReady();
     }
-}, 100);
+}, 1000);
+
 
 
 function onReady() {
-    const openDivs = document.querySelectorAll("[data-open]");
-    const closeDivs = document.querySelectorAll("[data-close]");
-    const isVisible = "is-visible";
+    const openDivs = document.querySelectorAll('[data-open]');
+    const closeDivs = document.querySelectorAll('[data-close]');
+    const isVisible = 'is-visible';
 
     for (const div of openDivs) {
         i = 1;
-        div.addEventListener("click", function () {
+        div.addEventListener('click', function () {
             const modalId = this.dataset.open;
             $('body').css('overflow', 'hidden');
-
+            div.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
             if (i === 1) {
                 getTitle(this.id);
                 addVideo(this.id);
@@ -24,6 +26,10 @@ function onReady() {
                 addSimilar(this.id);
                 i++;
             }
+           
+                // $('.fa-spinner').fadeOut();
+                // div.innerHTML = 'More info';
+            
             document.getElementById(modalId).classList.add(isVisible);
 
         });
@@ -51,7 +57,15 @@ function onReady() {
         }
     });
 
+    const dots = document.querySelectorAll('.review-cont article');
+    dots.forEach(dot => dot.addEventListener('click', () => {
+        dot.classList.toggle("expand");
+    }));
 
+}
+
+
+function displayposterhover() {
     var posters = document.querySelectorAll(".poster-wrap");
 
     posters.forEach(poster => {
@@ -65,12 +79,6 @@ function onReady() {
         });
 
     });
-
-
-    const dots = document.querySelectorAll('.review-cont article');
-    dots.forEach(dot => dot.addEventListener('click', () => {
-        dot.classList.toggle("expand");
-    }));
 
 }
 

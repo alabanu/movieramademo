@@ -8,7 +8,7 @@ var stickyNavTop = $('.nav').offset().top;
 
 
 $(function () {
-
+    
     window.onload = function (e) {
         $(".loader").fadeIn("slow");
         fetchPage(++page);
@@ -106,7 +106,8 @@ async function nowplaying(myJson) {
 
     var x = document.querySelector("#nodata");
     x.style.display = "none";
-
+    
+    console.log("movies.results.length//"+movies.results.length);
     if (movies.results.length != 0) {
         total_pages = movies.total_pages;
         for (var x = 0; x < movies.results.length; x++) {
@@ -370,7 +371,7 @@ async function addSimilar(movieid) {
                     imagediv.appendChild(titlelink);
                     carousel.appendChild(imagediv);
 
-                    document.querySelector('.similar').appendChild(carousel);
+                    document.querySelector('.similar').appendChild(carousel);                 
 
                 })
             } else {
