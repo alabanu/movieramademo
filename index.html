@@ -27,7 +27,8 @@
             <i class="fas fa-search search-icon"></i>
           </div>
           <form class="search-form" onSubmit="return false;" id="position">
-            <input type="text" placeholder="Search" id="search" autocomplete="off">
+            <input type="text" placeholder="Find movies" id="search" autocomplete="off">
+            
           </form>
           <svg class="search-border" version="1.1" xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
@@ -35,6 +36,9 @@
             <path class="border" d="M335.5,108.5h-280c-29.3,0-53-23.7-53-53v0c0-29.3,23.7-53,53-53h280"></path>
             <path class="border" d="M335.5,108.5h280c29.3,0,53-23.7,53-53v0c0-29.3-23.7-53-53-53h-280"></path>
           </svg>
+          <div id="nodata" style ="display: none">
+            No results
+            </div>
           <div class="go-icon">
             <i class="fa fa-arrow-right"></i>
           </div>

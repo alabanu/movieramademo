@@ -688,6 +688,15 @@ img {
   color: #f1f1f1;
 }
 
+#nodata{
+  width: 100%;
+  padding: 20px 10px;
+  text-align: left;
+  color: black;
+  font-size: larger;
+  background-color: #fff;
+  margin-top: 10px;
+}
 
 /*snackbar*/
 

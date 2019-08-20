@@ -8,7 +8,6 @@ var interval = setInterval(function () {
 
 function onReady() {
     const openEls = document.querySelectorAll("[data-open]");
-
     const closeEls = document.querySelectorAll("[data-close]");
     const isVisible = "is-visible";
 
@@ -17,7 +16,8 @@ function onReady() {
         i = 1;
         el.addEventListener("click", function () {
             const modalId = this.dataset.open;
-
+            $('body').css('overflow', 'hidden');
+            
             if (i === 1) {
                 console.log("****ID//"+this.id);
                 getTitle(this.id);
@@ -35,18 +35,21 @@ function onReady() {
 
     for (const el of closeEls) {
         el.addEventListener("click", function () {
+            $('body').css('overflow', 'auto');
             this.parentElement.parentElement.parentElement.classList.remove(isVisible);
         });
     }
 
     document.addEventListener("click", e => {
         if (e.target == document.querySelector(".modal.is-visible")) {
+            $('body').css('overflow', 'auto');
             document.querySelector(".modal.is-visible").classList.remove(isVisible);
         }
     });
 
     document.addEventListener("keyup", e => {
         if (e.key == "Escape" && document.querySelector(".modal.is-visible")) {
+            $('body').css('overflow', 'auto');
             document.querySelector(".modal.is-visible").classList.remove(isVisible);
         }
     });

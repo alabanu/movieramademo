@@ -27,7 +27,7 @@ $(document).ready(function () {
         search_form(movie_title);
     });
 
-    /*Search for movies*/
+/*Search for movies*/
  async  function search_form(title) {
         console.log("call search");
         const url = baseUrl + 'search/movie?api_key=bc50218d91157b1ba4f142ef7baaa6a0&query=' + title;

@@ -103,53 +103,64 @@ async function nowplaying(myJson) {
     array = JSON.stringify(myJson);
     var movies = JSON.parse(array);
     console.log("length:" + movies.results.length);
+    var x = document.querySelector("#nodata");
+    x.style.display = "none";
 
-    total_pages = movies.total_pages;
-    for (var x = 0; x < movies.results.length; x++) {
-        card = document.createElement('li');
-        card.className = 'cards_item';
+    if (movies.results.length != 0) {
+        total_pages = movies.total_pages;
+        for (var x = 0; x < movies.results.length; x++) {
+            card = document.createElement('li');
+            card.className = 'cards_item';
 
-        const carddiv = document.createElement('div');
-        carddiv.className = 'card slide-top';
+            const carddiv = document.createElement('div');
+            carddiv.className = 'card slide-top';
 
-        //poster-wrap
-        const imagewrapdiv = document.createElement('div');
-        imagewrapdiv.className = 'poster-wrap';
-        //poster
-        var imagediv = displayPoster(movies.results[x].poster_path);
-        imagewrapdiv.appendChild(imagediv);
+            //poster-wrap
+            const imagewrapdiv = document.createElement('div');
+            imagewrapdiv.className = 'poster-wrap';
+            //poster
+            var imagediv = displayPoster(movies.results[x].poster_path);
+            imagewrapdiv.appendChild(imagediv);
 
-        //overview
-        var hovercover = displayOverview(movies.results[x].overview);
-        imagewrapdiv.appendChild(hovercover);
-        carddiv.appendChild(imagewrapdiv);
+            //overview
+            var hovercover = displayOverview(movies.results[x].overview);
+            imagewrapdiv.appendChild(hovercover);
+            carddiv.appendChild(imagewrapdiv);
 
-        //title
-        const h1 = document.createElement('h4');
-        h1.className = 'titlecls';
-        h1.textContent = movies.results[x].title;
-        carddiv.appendChild(h1);
+            //title
+            const h1 = document.createElement('h4');
+            h1.className = 'titlecls';
+            h1.textContent = movies.results[x].title;
+            carddiv.appendChild(h1);
 
-        //Release year + average
-        var subdiv = displayYearVotediv(movies.results[x].release_date, movies.results[x].vote_average);
-        carddiv.appendChild(subdiv);
+            //Release year + average
+            var subdiv = displayYearVotediv(movies.results[x].release_date, movies.results[x].vote_average);
+            carddiv.appendChild(subdiv);
 
-        //Genres
-        const genre = document.createElement('div');
-        genre.className = 'genrecls';
-        genre.innerHTML = await displayGenres(movies.results[x].genre_ids);
-        carddiv.appendChild(genre);
+            //Genres
+            const genre = document.createElement('div');
+            genre.className = 'genrecls';
+            genre.innerHTML = await displayGenres(movies.results[x].genre_ids);
+            carddiv.appendChild(genre);
 
-        //Separator 
-        const sep = document.createElement('hr');
-        sep.sclassName = 'sep';
-        carddiv.appendChild(sep);
+            //Separator 
+            const sep = document.createElement('hr');
+            sep.sclassName = 'sep';
+            carddiv.appendChild(sep);
 
-        //Button more info
-        var detailsbut = displayButtons(movies.results[x].id);
-        carddiv.appendChild(detailsbut);
-        card.appendChild(carddiv);
-        container.appendChild(card);
+            //Button more info
+            var detailsbut = displayButtons(movies.results[x].id);
+            carddiv.appendChild(detailsbut);
+            card.appendChild(carddiv);
+            container.appendChild(card);
+        }
+    } else {
+        var x = document.getElementById("nodata");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
     }
     $(".loader").fadeOut("slow");
 
