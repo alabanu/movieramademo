@@ -367,7 +367,7 @@ img {
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background: rgba(158, 158, 158, 0.8);
+  background: rgba(158, 158, 158, 0.6);
   cursor: pointer;
   visibility: hidden;
   opacity: 0;
@@ -719,4 +719,48 @@ img {
   white-space: nowrap;
   font-size: 12px;
   color: #f1f1f1;
+}
+
+
+/*snackbar*/
+
+#snackbar {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  max-width: 50rem;
+  background-color: #ec4343;
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  margin: 0 auto;
+  padding: 16px;
+  /* position: fixed; */
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+}
+
+.showerror {
+  visibility: visible !important; /* Show the snackbar */
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
 }

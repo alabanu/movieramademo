@@ -264,7 +264,7 @@ async function getGenre(genres) {
         });
 
     })
-        .catch(error => console.log(error));
+        .catch(error => showSnackbar(error));
 
     return dataend;
 }
@@ -363,25 +363,25 @@ function addSimilar(movieid) {
 }
 
 //http://jsfiddle.net/SqJ53/2/
-// document.addEventListener("click", e => {
-//     console.log("innnnnnnnn");
-    document.querySelectorAll(".review-cont article").forEach(function(o){
-        o.addEventListener('click', function(e){
-        //   var $this = e.target
-    // if (e.target == article) {
-        $(e.target).toggleClass("expand");
-        })
-    });
-// });
 
-    // var element = document.querySelector(".review-cont article");
-    // element.addEventListener('click', function() {
-        
-    //     return function(e) {
-    //         $(".review-cont article").toggleClass("expand");
-    //     };
-    // }()
-    // )
-    
+document.querySelectorAll(".review-cont article").forEach(function (o) {
+    o.addEventListener('click', function (e) {
+        console.log("click expand");
+        $(e.target).toggleClass("expand");
+    })
+});
+
+
+function showSnackbar(message) {
+    var x = document.getElementById("snackbar")
+    x.className = "showerror";
+    message = "An error occured";
+    x.innerHTML = message;
+    setTimeout(function () { x.className = x.className.replace("showerror", ""); }, 3000);
+    $(".loader").fadeOut("slow");
+}
+
+
+
 
 
