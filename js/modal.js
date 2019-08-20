@@ -27,8 +27,8 @@ function onReady() {
                 i++;
             }
            
-                // $('.fa-spinner').fadeOut();
-                // div.innerHTML = 'More info';
+            setTimeout(myfonction, 500); 
+           
             
             document.getElementById(modalId).classList.add(isVisible);
 
@@ -64,6 +64,10 @@ function onReady() {
 
 }
 
+function myfonction(){
+    $('.fa-spinner').fadeOut();
+    $('.open-modal').innerHTML = 'More info';
+}
 
 function displayposterhover() {
     var posters = document.querySelectorAll(".poster-wrap");
