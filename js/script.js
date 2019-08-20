@@ -4,23 +4,6 @@ const container = document.getElementById('container');
 const baseUrl = 'https://api.themoviedb.org/3/';
 let total_pages = 1;
 
-function debounce(func, wait, immediate) {
-
-    var timeout;
-    return function () {
-        var context = this, args = arguments;
-        var later = function () {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-    };
-};
-
-
 
 $(function () {
 
@@ -55,15 +38,31 @@ $(function () {
             console.log("innnn");
             $(".loader").fadeOut("slow");
         }
-       
+
     }, 300);
 
 });
 
 
+function debounce(func, wait, immediate) {
+
+    var timeout;
+    return function () {
+        var context = this, args = arguments;
+        var later = function () {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+};
 
 //infinite scrolling
 function getDocumentHeight() {
+
     const body = document.body;
     const html = document.documentElement;
 
@@ -74,6 +73,7 @@ function getDocumentHeight() {
 };
 
 function getScrollTop() {
+
     return (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
 }
 
@@ -95,9 +95,11 @@ async function fetchPage(page) {
 }
 
 async function nowplaying(myJson) {
+
     array = JSON.stringify(myJson);
     var movies = JSON.parse(array);
     console.log("length:" + movies.results.length);
+
     total_pages = movies.total_pages;
     for (var x = 0; x < movies.results.length; x++) {
         card = document.createElement('li');
@@ -110,36 +112,12 @@ async function nowplaying(myJson) {
         const imagewrapdiv = document.createElement('div');
         imagewrapdiv.className = 'poster-wrap';
         //poster
-        const imagediv = document.createElement('div');
-        imagediv.className = 'card_image_div';
-        const img = document.createElement("img");
-        img.className = 'card_image';
-        if (movies.results[x].poster_path != null) {
-            img.src = 'https://image.tmdb.org/t/p/original' + movies.results[x].poster_path;
-        }
-        else {
-            img.src = 'https://amfnews.com/wp-content/uploads/2014/10/default-img-1000x600.gif';
-            img.height = 439;
-            img.width = 293;
-        }
-        imagediv.appendChild(img);
-
+        var imagediv = displayPoster(movies.results[x].poster_path);
         imagewrapdiv.appendChild(imagediv);
 
         //overview
-        const hovercover = document.createElement('div');
-        hovercover.className = 'hover-cover';
-        const hovercoversub = document.createElement('div');
-        hovercoversub.className = 'wrapper details';
-        const hovercoversubtitle = document.createElement('h2');
-        hovercoversubtitle.innerHTML = "Overview";
-        hovercoversub.appendChild(hovercoversubtitle);
-        const overview = document.createElement('p');
-        overview.innerHTML = movies.results[x].overview;
-        hovercoversub.appendChild(overview);
-        hovercover.appendChild(hovercoversub);
+        var hovercover = displayOverview(movies.results[x].overview);
         imagewrapdiv.appendChild(hovercover);
-
         carddiv.appendChild(imagewrapdiv);
 
         //title
@@ -148,57 +126,111 @@ async function nowplaying(myJson) {
         h1.textContent = movies.results[x].title;
         carddiv.appendChild(h1);
 
-        //date_average div
-        const subdiv = document.createElement('div');
-
-        //Release year
-        const release_year = document.createElement('h5');
-        release_year.className = 'relcls';
-        release_year.innerHTML = '<i class = "fas fa-calendar-alt fa-lg" aria-hidden="true"></i>&nbsp&nbsp' + getYear(movies.results[x].release_date);
-
-        //Vote average
-        const vote_average = document.createElement('h5');
-        vote_average.className = 'votecls';
-        vote_average.innerHTML = '<i class = "fas fa-star fa-lg" aria-hidden="true"></i>&nbsp' + movies.results[x].vote_average;
-        subdiv.appendChild(release_year);
-        subdiv.appendChild(vote_average);
+        //Release year + average
+        var subdiv = displayYearVotediv(movies.results[x].release_date, movies.results[x].vote_average);
         carddiv.appendChild(subdiv);
 
         //Genres
-        const result = await getGenre(movies.results[x].genre_ids);
-        var str = result.toString()
-        var output = str.split(',').join(', ');
+        const genre = document.createElement('div');
+        genre.className = 'genrecls';
+        genre.innerHTML = await displayGenres(movies.results[x].genre_ids);
+        carddiv.appendChild(genre);
 
-        const genres = document.createElement('div');
-        genres.className = 'genrecls';
-        genres.innerHTML = '<i class = "fas fa-film fa-lg" aria-hidden="true"></i>&nbsp' + output;
-        carddiv.appendChild(genres);
-
-
-
-        //separator
+        //Separator 
         const sep = document.createElement('hr');
         sep.sclassName = 'sep';
         carddiv.appendChild(sep);
 
-
-        const detailsbut = document.createElement('button');
-        detailsbut.appendChild(document.createTextNode("More Info"));
-        detailsbut.id = movies.results[x].id;
-        detailsbut.className = 'open-modal';
-        detailsbut.setAttribute('data-open', 'modal');
-
+        //Button more info
+        var detailsbut = displayButtons(movies.results[x].id);
         carddiv.appendChild(detailsbut);
-
         card.appendChild(carddiv);
-
         container.appendChild(card);
     }
     $(".loader").fadeOut("slow");
 
 }
 
+function displayPoster(poster_path) {
+
+    //poster
+    const imagediv = document.createElement('div');
+    imagediv.className = 'card_image_div';
+    const img = document.createElement("img");
+    img.className = 'card_image';
+    if (poster_path != null) {
+        img.src = 'https://image.tmdb.org/t/p/original' + poster_path;
+    }
+    else {
+        img.src = 'https://amfnews.com/wp-content/uploads/2014/10/default-img-1000x600.gif';
+        img.height = 439;
+        img.width = 293;
+    }
+    imagediv.appendChild(img);
+    return imagediv;
+}
+
+function displayOverview(overview_text) {
+
+    const hovercover = document.createElement('div');
+    hovercover.className = 'hover-cover';
+    const hovercoversub = document.createElement('div');
+    hovercoversub.className = 'wrapper details';
+    const hovercoversubtitle = document.createElement('h2');
+    hovercoversubtitle.innerHTML = "Overview";
+    hovercoversub.appendChild(hovercoversubtitle);
+    const overview = document.createElement('p');
+    overview.innerHTML = overview_text;
+    hovercoversub.appendChild(overview);
+    hovercover.appendChild(hovercoversub);
+    return hovercover;
+}
+
+
+function displayYearVotediv(release_date, average) {
+
+    //date_average div
+    const subdiv = document.createElement('div');
+    //Release year
+    const release_year = document.createElement('h5');
+    release_year.className = 'relcls';
+    release_year.innerHTML = '<i class = "fas fa-calendar-alt fa-lg" aria-hidden="true"></i>&nbsp&nbsp' + getYear(release_date);
+    //Vote average
+    const vote_average = document.createElement('h5');
+    vote_average.className = 'votecls';
+    vote_average.innerHTML = '<i class = "fas fa-star fa-lg" aria-hidden="true"></i>&nbsp' + average;
+    subdiv.appendChild(release_year);
+    subdiv.appendChild(vote_average);
+    return subdiv;
+}
+
+function displayButtons(movieId) {
+
+    const detailsbut = document.createElement('button');
+    detailsbut.appendChild(document.createTextNode("More Info"));
+    detailsbut.id = movieId;
+    detailsbut.className = 'open-modal';
+    detailsbut.setAttribute('data-open', 'modal');
+    return detailsbut;
+}
+async function displayGenres(genreId) {
+
+    const result = await getGenre(genreId);
+    var str = result.toString()
+    if (str.length > 0) {
+        var output = str.split(',').map(function (w) {
+            return '<span class="chip">' + w + '</span>&nbsp';
+        }).join('')
+        return output;
+    }
+    else {
+        return '<i class = "fas fa-film fa-lg" aria-hidden="true"></i>&nbsp';
+    }
+}
+
+
 function getYear(date) {
+
     var d = new Date(date);
     var n = d.getFullYear();
     return n;
@@ -236,35 +268,6 @@ async function getGenre(genres) {
 
     return dataend;
 }
-
-
-
-// /*Search for movies*/
-// function search_form(title) {
-//     console.log("calll search");
-//     const url = baseUrl + 'search/movie?api_key=bc50218d91157b1ba4f142ef7baaa6a0&query=' + title;
-//     fetch(url)
-//         .then((resp) => resp.json())
-//         .then((data) => {
-//             let authors = data.results;
-//             console.log(authors);
-//             return authors.map(function (author) {
-//                 // let li = createNode('li'),
-//                 //     img = createNode('img'),
-//                 //     span = createNode('span');
-//                 // // span.innerHTML = `${author.name.first} ${author.name.last}`;
-//                 // append(li, img);
-//                 // append(li, span);
-//                 // append(ul, li);
-//             })
-//         })
-//         .catch((error) => {
-//             console.log(JSON.stringify(error));
-//         });
-
-// }
-
-
 
 
 /*View movie details*/
@@ -306,7 +309,7 @@ function addReview(movieid) {
         .then(function (data) {
             let reviews = data.results;
             return reviews.map(function (data) {
-                document.querySelector('.review').innerHTML = document.querySelector('.review').innerHTML + '<div class="user-comments"><div class="comment-meta"><i class="fas fa-user"></i>&nbspby ' + data.author + '<span></span></div> <div class = "review-cont"> <article>' + data.content + '</article></div></div>';
+                document.querySelector('.review').innerHTML = document.querySelector('.review').innerHTML + '<div class="user-comments"><div class="comment-meta"><i class="fas fa-user"></i>&nbspby ' + data.author + '<span></span></div> <div class = "review-cont"> <article>' + data.content + '</article><div class="" style="    text-align: right;    right: 0;    bottom: 0;    z-index: 2;    cursor: pointer;">                <svg class="ipl-expander__icon expander-icon " width="12" height="8" viewBox="0 0 12 8" xmlns="http://www.w3.org/2000/svg"><path d="M10.197 0L6 4.304 1.803 0 0 1.85 6 8l6-6.15" fill="#2572B3" fill-rule="evenodd"></path> </svg></div></div></div>';
             })
 
         })
@@ -345,7 +348,8 @@ function addSimilar(movieid) {
                 imagediv.appendChild(img);
 
                 const titlelink = document.createElement('div');
-                titlelink.innerHTML = '<a href = "#" style = "font-size: 12px;">' + data.title + '</a>';
+                titlelink.className = 'overlay';
+                titlelink.innerHTML = '<a href = "#" class = "linktitle" >' + data.title + '</a>';
                 imagediv.appendChild(titlelink);
                 carousel.appendChild(imagediv);
 
@@ -361,11 +365,23 @@ function addSimilar(movieid) {
 //http://jsfiddle.net/SqJ53/2/
 // document.addEventListener("click", e => {
 //     console.log("innnnnnnnn");
-//     article = document.querySelector(".review-cont article");
-//     if (e.target == article) {
-//         console.log("after");
-//         $(this).toggleClass("expand");
-//     }
-//     });
+    document.querySelectorAll(".review-cont article").forEach(function(o){
+        o.addEventListener('click', function(e){
+        //   var $this = e.target
+    // if (e.target == article) {
+        $(e.target).toggleClass("expand");
+        })
+    });
+// });
+
+    // var element = document.querySelector(".review-cont article");
+    // element.addEventListener('click', function() {
+        
+    //     return function(e) {
+    //         $(".review-cont article").toggleClass("expand");
+    //     };
+    // }()
+    // )
+    
 
 

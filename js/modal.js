@@ -17,7 +17,7 @@ function onReady() {
         i = 1;
         el.addEventListener("click", function () {
             const modalId = this.dataset.open;
-           
+
             if (i === 1) {
                 getTitle(this.id);
                 addVideo(this.id);
@@ -52,10 +52,9 @@ function onReady() {
 
 
     var posters = document.querySelectorAll(".poster-wrap");
-    
+
     posters
         .forEach(poster => {
-            
             var hovercover = poster.parentElement.querySelector(".hover-cover");
             poster.addEventListener('mouseover', () => {
                 hovercover.classList.add("show");
@@ -67,6 +66,13 @@ function onReady() {
 
         });
 
+
+    const dots = document.querySelectorAll('.review-cont article');
+    dots.forEach(dot => dot.addEventListener('click', () => {
+        dot.classList.toggle("expand");
+    }));
+
+   
 }
 
 
