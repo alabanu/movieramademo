@@ -72,7 +72,6 @@ function onReady() {
         dot.classList.toggle("expand");
     }));
 
-   
 }
 
 

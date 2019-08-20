@@ -106,7 +106,7 @@ async function nowplaying(myJson) {
         card.className = 'cards_item';
 
         const carddiv = document.createElement('div');
-        carddiv.className = 'card';
+        carddiv.className = 'card slide-top';
 
         //poster-wrap
         const imagewrapdiv = document.createElement('div');
@@ -380,7 +380,6 @@ function showSnackbar(message) {
     setTimeout(function () { x.className = x.className.replace("showerror", ""); }, 3000);
     $(".loader").fadeOut("slow");
 }
-
 
 
 
