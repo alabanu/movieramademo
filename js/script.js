@@ -2,6 +2,7 @@
 let page = 0;
 const container = document.getElementById('container');
 const baseUrl = 'https://api.themoviedb.org/3/';
+const apikey = 'bc50218d91157b1ba4f142ef7baaa6a0';
 let total_pages = 1;
 var stickyNavTop = $('.nav').offset().top;
 
@@ -88,7 +89,7 @@ function getScrollTop() {
 /*In theaters*/
 async function fetchPage(page) {
 
-    url = baseUrl + 'movie/now_playing?api_key=bc50218d91157b1ba4f142ef7baaa6a0&page=' + page;
+    url = baseUrl + 'movie/now_playing?api_key=' + apikey + '&page=' + page;
     await fetch(url)
         .then(response => {
             return response.json();
@@ -102,7 +103,7 @@ async function nowplaying(myJson) {
 
     array = JSON.stringify(myJson);
     var movies = JSON.parse(array);
-    console.log("length:" + movies.results.length);
+
     var x = document.querySelector("#nodata");
     x.style.display = "none";
 
@@ -157,6 +158,7 @@ async function nowplaying(myJson) {
     } else {
         var x = document.getElementById("nodata");
         if (x.style.display === "none") {
+            x.innerHTML = "No results";
             x.style.display = "block";
         } else {
             x.style.display = "none";
@@ -254,7 +256,7 @@ function getYear(date) {
 async function getGenre(genres) {
 
     let moviegenres = [];
-    var url = baseUrl + 'genre/movie/list?api_key=bc50218d91157b1ba4f142ef7baaa6a0';
+    var url = baseUrl + 'genre/movie/list?api_key=' + apikey;
 
     let dataend = await fetch(url)
         .then((res) => {
@@ -271,7 +273,6 @@ async function getGenre(genres) {
                 )
             });
 
-
             return Promise.all(moviegenres).then((results) => {
                 return results;
             });
@@ -287,7 +288,7 @@ async function getGenre(genres) {
 
 async function getTitle(movieid) {
 
-    const url = baseUrl + 'movie/' + movieid + '?api_key=bc50218d91157b1ba4f142ef7baaa6a0';
+    const url = baseUrl + 'movie/' + movieid + '?api_key=' + apikey;
     await fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
@@ -298,18 +299,15 @@ async function getTitle(movieid) {
 
 
 async function addVideo(movieid) {
-    console.log("ID//" + movieid);
-    const url = baseUrl + 'movie/' + movieid + '/videos?api_key=bc50218d91157b1ba4f142ef7baaa6a0';
+    const url = baseUrl + 'movie/' + movieid + '/videos?api_key=' + apikey;
     await fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
-            console.log("data.results[0].key//" + data);
             if (data.results.length != 0) {
-                console.log("data.results[0].key//" + data.results[0].key);
                 document.querySelector('.trailer').innerHTML = '<h3>Trailer</h3> <iframe id="videoArea" class="resp-iframe" src="https://www.youtube.com/embed/' + data.results[0].key + '" frameborder="0" allowfullscreen></iframe>';
             }
             else {
-                document.querySelector('.trailer').innerHTML = "<h3>Trailer</h3> Not Available";
+                document.querySelector('.trailer').innerHTML = "<h3>Trailer</h3> <p>Not Available</p>";
             }
         })
         .catch(error => showSnackbar("from addVideo//" + error));
@@ -318,16 +316,20 @@ async function addVideo(movieid) {
 
 async function addReview(movieid) {
     let page = 1;
-    const url = baseUrl + 'movie/' + movieid + '/reviews?api_key=bc50218d91157b1ba4f142ef7baaa6a0&page=' + page;
+    const url = baseUrl + 'movie/' + movieid + '/reviews?api_key=' + apikey + '&page=' + page;
     document.querySelector('.review').innerHTML = '<h3>User Reviews</h3>';
     await fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
-            let reviews = data.results;
-            return reviews.map(function (data) {
-                document.querySelector('.review').innerHTML = document.querySelector('.review').innerHTML + '<div class="user-comments"><div class="comment-meta"><i class="fas fa-user"></i>&nbspby ' + data.author + '<span></span></div> <div class = "review-cont"> <article>' + data.content + '</article><div class="" style="    text-align: right;    right: 0;    bottom: 0;    z-index: 2;    cursor: pointer;">                <svg class="ipl-expander__icon expander-icon " width="12" height="8" viewBox="0 0 12 8" xmlns="http://www.w3.org/2000/svg"><path d="M10.197 0L6 4.304 1.803 0 0 1.85 6 8l6-6.15" fill="#2572B3" fill-rule="evenodd"></path> </svg></div></div></div>';
-            })
-
+            if (data.results.length != 0) {
+                let reviews = data.results;
+                return reviews.map(function (data) {
+                    document.querySelector('.review').innerHTML = document.querySelector('.review').innerHTML + '<div class="user-comments"><div class="comment-meta"><i class="fas fa-user"></i>&nbspby ' + data.author + '<span></span></div> <div class = "review-cont"> <article>' + data.content + '</article><div class="" style="    text-align: right;    right: 0;    bottom: 0;    z-index: 2;    cursor: pointer;">                <svg class="ipl-expander__icon expander-icon " width="12" height="8" viewBox="0 0 12 8" xmlns="http://www.w3.org/2000/svg"><path d="M10.197 0L6 4.304 1.803 0 0 1.85 6 8l6-6.15" fill="#2572B3" fill-rule="evenodd"></path> </svg></div></div></div>';
+                })
+            }
+            else {
+                document.querySelector('.review').innerHTML = "<h3>User Reviews</h3> <p>Not Available</p>";
+            }
         })
         .catch(error => showSnackbar("from addReview//" + error));
 }
@@ -339,42 +341,45 @@ async function addSimilar(movieid) {
     const carousel = document.createElement('div');
     carousel.className = 'slider';
 
-    const url = baseUrl + 'movie/' + movieid + '/similar?api_key=bc50218d91157b1ba4f142ef7baaa6a0&page=' + page;
+    const url = baseUrl + 'movie/' + movieid + '/similar?api_key=' + apikey + '&page=' + page;
     await fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
-            let similar = data.results;
-            return similar.map(function (data) {
+            if (data.results.length != 0) {
+                let similar = data.results;
+                return similar.map(function (data) {
 
-                const imagediv = document.createElement('div');
-                imagediv.className = 'slide';
-                const img = document.createElement("img");
-                img.className = 'card_image_similar';
-                if (data.poster_path != null) {
-                    img.src = 'https://image.tmdb.org/t/p/original' + data.poster_path;
+                    const imagediv = document.createElement('div');
+                    imagediv.className = 'slide';
+                    const img = document.createElement("img");
+                    img.className = 'card_image_similar';
+                    if (data.poster_path != null) {
+                        img.src = 'https://image.tmdb.org/t/p/original' + data.poster_path;
 
-                }
-                else {
-                    img.src = 'https://amfnews.com/wp-content/uploads/2014/10/default-img-1000x600.gif';
-                    img.height = 50;
-                    img.width = 50;
-                }
-                imagediv.appendChild(img);
+                    }
+                    else {
+                        img.src = 'https://amfnews.com/wp-content/uploads/2014/10/default-img-1000x600.gif';
+                        img.height = 50;
+                        img.width = 50;
+                    }
+                    imagediv.appendChild(img);
 
-                const titlelink = document.createElement('div');
-                titlelink.className = 'overlay';
-                titlelink.innerHTML = '<a href = "#" class = "linktitle" >' + data.title + '</a>';
-                imagediv.appendChild(titlelink);
-                carousel.appendChild(imagediv);
+                    const titlelink = document.createElement('div');
+                    titlelink.className = 'overlay';
+                    titlelink.innerHTML = '<a href = "#" class = "linktitle" >' + data.title + '</a>';
+                    imagediv.appendChild(titlelink);
+                    carousel.appendChild(imagediv);
 
-                document.querySelector('.similar').appendChild(carousel);
-            })
+                    document.querySelector('.similar').appendChild(carousel);
+
+                })
+            } else {
+                document.querySelector('.similar').innerHTML = "<h3>Similar Movies</h3> <p>Not Available</p>";
+            }
 
         })
         .catch(error => showSnackbar("from addSimilar// " + error));
 }
-
-//http://jsfiddle.net/SqJ53/2/
 
 document.querySelectorAll(".review-cont article").forEach(function (o) {
     o.addEventListener('click', function (e) {
@@ -387,7 +392,6 @@ document.querySelectorAll(".review-cont article").forEach(function (o) {
 function showSnackbar(message) {
     var x = document.getElementById("snackbar")
     x.className = "showerror";
-    // message = "An error occured";
     x.innerHTML = message;
     setTimeout(function () { x.className = x.className.replace("showerror", ""); }, 9000);
     $(".loader").fadeOut("slow");

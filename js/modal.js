@@ -7,34 +7,31 @@ var interval = setInterval(function () {
 
 
 function onReady() {
-    const openEls = document.querySelectorAll("[data-open]");
-    const closeEls = document.querySelectorAll("[data-close]");
+    const openDivs = document.querySelectorAll("[data-open]");
+    const closeDivs = document.querySelectorAll("[data-close]");
     const isVisible = "is-visible";
 
-
-    for (const el of openEls) {
+    for (const div of openDivs) {
         i = 1;
-        el.addEventListener("click", function () {
+        div.addEventListener("click", function () {
             const modalId = this.dataset.open;
             $('body').css('overflow', 'hidden');
-            
+
             if (i === 1) {
-                console.log("****ID//"+this.id);
                 getTitle(this.id);
                 addVideo(this.id);
                 addReview(this.id);
                 addSimilar(this.id);
                 i++;
             }
-
             document.getElementById(modalId).classList.add(isVisible);
 
         });
 
     }
 
-    for (const el of closeEls) {
-        el.addEventListener("click", function () {
+    for (const div of closeDivs) {
+        div.addEventListener("click", function () {
             $('body').css('overflow', 'auto');
             this.parentElement.parentElement.parentElement.classList.remove(isVisible);
         });
@@ -57,18 +54,17 @@ function onReady() {
 
     var posters = document.querySelectorAll(".poster-wrap");
 
-    posters
-        .forEach(poster => {
-            var hovercover = poster.parentElement.querySelector(".hover-cover");
-            poster.addEventListener('mouseover', () => {
-                hovercover.classList.add("show");
-            });
-
-            poster.addEventListener('mouseleave', () => {
-                hovercover.classList.remove("show");
-            });
-
+    posters.forEach(poster => {
+        var hovercover = poster.parentElement.querySelector(".hover-cover");
+        poster.addEventListener('mouseover', () => {
+            hovercover.classList.add("show");
         });
+
+        poster.addEventListener('mouseleave', () => {
+            hovercover.classList.remove("show");
+        });
+
+    });
 
 
     const dots = document.querySelectorAll('.review-cont article');

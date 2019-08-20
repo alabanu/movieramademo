@@ -2,7 +2,7 @@ function basicScrollTop(){
 
     var btnTop = document.querySelector('#goTop');
 
-    var btnReveal = function () {
+    var btntop = function () {
         if (window.scrollY >= 300) {
             btnTop.classList.add('is-visible');
         } else {
@@ -19,7 +19,7 @@ function basicScrollTop(){
         }
     }
 
-    window.addEventListener('scroll', btnReveal);
+    window.addEventListener('scroll', btntop);
     btnTop.addEventListener('click', TopscrollTo);
 
 };

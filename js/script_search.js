@@ -10,27 +10,34 @@ $(document).ready(function () {
 
     $("#search").keypress(debounce(function (e) {
         if (e.which == 9) { e.preventDefault(); }  //alt-tab key
-        console.log("val://" + $(this).val());
+    
         if ($(this).val() != "") {
             search_form($(this).val());
         }
-        if ($(this).val().length > 0) {
-            $(".go-icon").addClass("go-in");
-        }
-        else {
-            $(".go-icon").removeClass("go-in");
-        }
+
+        $(".go-icon").addClass("go-in");
+        var x = document.querySelector("#nodata");
+        x.innerHTML = "Can't find any matching results";
+        x.style.display = "block";
+
     }, 250));
 
     $(".go-icon").click(function () {
         var movie_title = $('#search').val();
-        search_form(movie_title);
+        if (movie_title.length != 0) {
+            search_form(movie_title);
+        }
+        else {
+            var x = document.querySelector("#nodata");
+            x.innerHTML = "Can't find any matching results";
+            x.style.display = "block";
+        }
     });
 
-/*Search for movies*/
- async  function search_form(title) {
-        console.log("call search");
-        const url = baseUrl + 'search/movie?api_key=bc50218d91157b1ba4f142ef7baaa6a0&query=' + title;
+    /*Search for movies*/
+    async function search_form(title) {
+    
+        const url = baseUrl + 'search/movie?api_key='+apikey+'&query=' + title;
         document.querySelector('.headtitle').innerHTML = 'Results for "' + title + '"';
         document.querySelector('#container').innerHTML = "";
         await fetch(url)
@@ -38,7 +45,7 @@ $(document).ready(function () {
             .then(async (myJson) => {
                 nowplaying(myJson);
             })
-            .catch(error => showSnackbar("from search_form//"+error));
+            .catch(error => showSnackbar("from search_form//" + error));
 
     }
 });
