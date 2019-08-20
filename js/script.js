@@ -3,46 +3,53 @@ let page = 0;
 const container = document.getElementById('container');
 const baseUrl = 'https://api.themoviedb.org/3/';
 let total_pages = 1;
+var stickyNavTop = $('.nav').offset().top;
 
 
 $(function () {
-
-    var stickyNavTop = $('.nav').offset().top;
-
-    var stickyNav = function () {
-        var scrollTop = $(window).scrollTop();
-
-        if (scrollTop > stickyNavTop) {
-            $('.nav').addClass('sticky');
-        } else {
-            $('.nav').removeClass('sticky');
-        }
-    };
-
-    stickyNav();
 
     window.onload = function (e) {
         $(".loader").fadeIn("slow");
         fetchPage(++page);
     }
 
-
-    window.onscroll = debounce(function () {
-        stickyNav();
-        if (getScrollTop() < getDocumentHeight() - window.innerHeight) return;
-        if (page < total_pages) {
-            fetchPage(++page);
-            $(".loader").fadeIn("slow");
-        }
-        else {
-            console.log("innnn");
-            $(".loader").fadeOut("slow");
-        }
-
-    }, 300);
+    window.addEventListener('scroll', throttle(stickyNav, 100));
+    window.addEventListener('scroll', debounce(debouncescroll, 1000));
 
 });
 
+
+function stickyNav() {
+    var scrollTop = $(window).scrollTop();
+
+    if (scrollTop > stickyNavTop) {
+        $('.nav').addClass('sticky');
+    } else {
+        $('.nav').removeClass('sticky');
+    }
+
+}
+
+function throttle(fn, wait) {
+    var time = Date.now();
+    return function () {
+        if ((time + wait - Date.now()) < 0) {
+            fn();
+            time = Date.now();
+        }
+    }
+}
+
+function debouncescroll() {
+    if (getScrollTop() < getDocumentHeight() - window.innerHeight) return;
+    if (page < total_pages) {
+        fetchPage(++page);
+        $(".loader").fadeIn("slow");
+    }
+    else {
+        $(".loader").fadeOut("slow");
+    }
+}
 
 function debounce(func, wait, immediate) {
 
@@ -82,15 +89,12 @@ function getScrollTop() {
 async function fetchPage(page) {
 
     url = baseUrl + 'movie/now_playing?api_key=bc50218d91157b1ba4f142ef7baaa6a0&page=' + page;
-    await fetch(url, {
-        method: 'get',
-        async: true,
-    }).then(response => {
-        return response.json();
-    }).then(async (myJson) => {
-        nowplaying(myJson);
-    })
-
+    await fetch(url)
+        .then(response => {
+            return response.json();
+        }).then(async (myJson) => {
+            nowplaying(myJson);
+        })
 
 }
 
@@ -241,30 +245,28 @@ async function getGenre(genres) {
     let moviegenres = [];
     var url = baseUrl + 'genre/movie/list?api_key=bc50218d91157b1ba4f142ef7baaa6a0';
 
-    let dataend = await fetch(url, {
-        method: 'get',
-        async: false,
-    }).then((res) => {
-        return res.json();
-    }).then((genreJson) => {
-        const genre_array = JSON.stringify(genreJson);
-        var contact = JSON.parse(genre_array);
-        genres.forEach(element => {
-            contact.genres.forEach(
-                (e2) => {
-                    if (element === e2.id)
-                        moviegenres.push(e2.name);
-                }
-            )
-        });
+    let dataend = await fetch(url)
+        .then((res) => {
+            return res.json();
+        }).then((genreJson) => {
+            const genre_array = JSON.stringify(genreJson);
+            var contact = JSON.parse(genre_array);
+            genres.forEach(element => {
+                contact.genres.forEach(
+                    (e2) => {
+                        if (element === e2.id)
+                            moviegenres.push(e2.name);
+                    }
+                )
+            });
 
 
-        return Promise.all(moviegenres).then((results) => {
-            return results;
-        });
+            return Promise.all(moviegenres).then((results) => {
+                return results;
+            });
 
-    })
-        .catch(error => showSnackbar(error));
+        })
+        .catch(error => showSnackbar("from getGenre//" + error));
 
     return dataend;
 }
@@ -272,39 +274,42 @@ async function getGenre(genres) {
 
 /*View movie details*/
 
-function getTitle(movieid) {
+async function getTitle(movieid) {
 
     const url = baseUrl + 'movie/' + movieid + '?api_key=bc50218d91157b1ba4f142ef7baaa6a0';
-    fetch(url)
+    await fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
             document.querySelector('#modaltitle span').innerHTML = data.title;
         })
-        .catch(function (error) {
-            console.log(JSON.stringify(error));
-        });
+        .catch(error => showSnackbar("from gettitle//" + error));
 }
 
 
-function addVideo(movieid) {
+async function addVideo(movieid) {
+    console.log("ID//" + movieid);
     const url = baseUrl + 'movie/' + movieid + '/videos?api_key=bc50218d91157b1ba4f142ef7baaa6a0';
-    fetch(url)
+    await fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
-            document.querySelector('.trailer').innerHTML = '<h3>Trailer</h3> <iframe id="videoArea" class="resp-iframe" src="https://www.youtube.com/embed/' + data.results[0].key + '" frameborder="0" allowfullscreen></iframe>';
-
+            console.log("data.results[0].key//" + data);
+            if (data.results.length != 0) {
+                console.log("data.results[0].key//" + data.results[0].key);
+                document.querySelector('.trailer').innerHTML = '<h3>Trailer</h3> <iframe id="videoArea" class="resp-iframe" src="https://www.youtube.com/embed/' + data.results[0].key + '" frameborder="0" allowfullscreen></iframe>';
+            }
+            else {
+                document.querySelector('.trailer').innerHTML = "<h3>Trailer</h3> Not Available";
+            }
         })
-        .catch(function (error) {
-            console.log(JSON.stringify(error));
-        });
+        .catch(error => showSnackbar("from addVideo//" + error));
 }
 
 
-function addReview(movieid) {
+async function addReview(movieid) {
     let page = 1;
     const url = baseUrl + 'movie/' + movieid + '/reviews?api_key=bc50218d91157b1ba4f142ef7baaa6a0&page=' + page;
     document.querySelector('.review').innerHTML = '<h3>User Reviews</h3>';
-    fetch(url)
+    await fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
             let reviews = data.results;
@@ -313,12 +318,10 @@ function addReview(movieid) {
             })
 
         })
-        .catch(function (error) {
-            console.log(JSON.stringify(error));
-        });
+        .catch(error => showSnackbar("from addReview//" + error));
 }
 
-function addSimilar(movieid) {
+async function addSimilar(movieid) {
     let page = 1;
     document.querySelector('.similar').innerHTML = '<h3>Similar Movies</h3>';
 
@@ -326,7 +329,7 @@ function addSimilar(movieid) {
     carousel.className = 'slider';
 
     const url = baseUrl + 'movie/' + movieid + '/similar?api_key=bc50218d91157b1ba4f142ef7baaa6a0&page=' + page;
-    fetch(url)
+    await fetch(url)
         .then((resp) => resp.json())
         .then(function (data) {
             let similar = data.results;
@@ -357,9 +360,7 @@ function addSimilar(movieid) {
             })
 
         })
-        .catch(function (error) {
-            console.log(JSON.stringify(error));
-        });
+        .catch(error => showSnackbar("from addSimilar// " + error));
 }
 
 //http://jsfiddle.net/SqJ53/2/
@@ -375,9 +376,9 @@ document.querySelectorAll(".review-cont article").forEach(function (o) {
 function showSnackbar(message) {
     var x = document.getElementById("snackbar")
     x.className = "showerror";
-    message = "An error occured";
+    // message = "An error occured";
     x.innerHTML = message;
-    setTimeout(function () { x.className = x.className.replace("showerror", ""); }, 3000);
+    setTimeout(function () { x.className = x.className.replace("showerror", ""); }, 9000);
     $(".loader").fadeOut("slow");
 }
 

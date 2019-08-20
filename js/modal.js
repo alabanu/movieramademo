@@ -19,6 +19,7 @@ function onReady() {
             const modalId = this.dataset.open;
 
             if (i === 1) {
+                console.log("****ID//"+this.id);
                 getTitle(this.id);
                 addVideo(this.id);
                 addReview(this.id);

@@ -28,19 +28,17 @@ $(document).ready(function () {
     });
 
     /*Search for movies*/
-    function search_form(title) {
+ async  function search_form(title) {
         console.log("call search");
         const url = baseUrl + 'search/movie?api_key=bc50218d91157b1ba4f142ef7baaa6a0&query=' + title;
         document.querySelector('.headtitle').innerHTML = 'Results for "' + title + '"';
         document.querySelector('#container').innerHTML = "";
-        fetch(url)
+        await fetch(url)
             .then((resp) => resp.json())
             .then(async (myJson) => {
                 nowplaying(myJson);
             })
-            .catch((error) => {
-                console.log(JSON.stringify(error));
-            });
+            .catch(error => showSnackbar("from search_form//"+error));
 
     }
 });
