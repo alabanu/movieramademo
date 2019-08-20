@@ -16,9 +16,9 @@ $(document).ready(function () {
         }
 
         $(".go-icon").addClass("go-in");
-        var x = document.querySelector("#nodata");
-        x.innerHTML = "Can't find any matching results";
-        x.style.display = "block";
+        // var x = document.querySelector("#nodata");
+        // x.innerHTML = "Can't find any matching results";
+        // x.style.display = "block";
 
     }, 250));
 
