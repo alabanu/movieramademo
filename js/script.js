@@ -107,9 +107,9 @@ async function nowplaying(myJson) {
     var x = document.querySelector("#nodata");
     x.style.display = "none";
     
-    console.log("movies.results.length//"+movies.results.length);
     if (movies.results.length != 0) {
         total_pages = movies.total_pages;
+        console.log("url//"+url);
         for (var x = 0; x < movies.results.length; x++) {
             card = document.createElement('li');
             card.className = 'cards_item';
@@ -232,9 +232,10 @@ function displayButtons(movieId) {
     return detailsbut;
 }
 async function displayGenres(genreId) {
-
-    const result = await getGenre(genreId);
-    var str = result.toString()
+ 
+    let resultgen = await getGenre(genreId);
+    
+    var str = resultgen.toString()
     if (str.length > 0) {
         var output = str.split(',').map(function (w) {
             return '<span class="chip">' + w + '</span>&nbsp';
@@ -245,6 +246,7 @@ async function displayGenres(genreId) {
         return '<i class = "fas fa-film fa-lg" aria-hidden="true"></i>&nbsp';
     }
 }
+
 
 
 function getYear(date) {
@@ -305,7 +307,7 @@ async function addVideo(movieid) {
         .then((resp) => resp.json())
         .then(function (data) {
             if (data.results.length != 0) {
-                document.querySelector('.trailer').innerHTML = '<h3>Trailer</h3> <iframe id="videoArea" class="resp-iframe" src="https://www.youtube.com/embed/' + data.results[0].key + '" frameborder="0" allowfullscreen></iframe>';
+                document.querySelector('.trailer').innerHTML = '<h3>Trailer</h3> <iframe id="videoarea" class="resp-iframe" src="https://www.youtube.com/embed/' + data.results[0].key + '" frameborder="0" allowfullscreen></iframe>';
             }
             else {
                 document.querySelector('.trailer').innerHTML = "<h3>Trailer</h3> <p>Not Available</p>";
@@ -384,7 +386,6 @@ async function addSimilar(movieid) {
 
 document.querySelectorAll(".review-cont article").forEach(function (o) {
     o.addEventListener('click', function (e) {
-        console.log("click expand");
         $(e.target).toggleClass("expand");
     })
 });
@@ -394,7 +395,7 @@ function showSnackbar(message) {
     var x = document.getElementById("snackbar")
     x.className = "showerror";
     x.innerHTML = message;
-    setTimeout(function () { x.className = x.className.replace("showerror", ""); }, 9000);
+    setTimeout(function () { x.className = x.className.replace("showerror", ""); }, 3000);
     $(".loader").fadeOut("slow");
 }
 

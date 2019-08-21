@@ -17,7 +17,7 @@ $(document).ready(function () {
         }
         $(".go-icon").addClass("go-in");
 
-    }, 250));
+    }, 850));
 
     $(".go-icon").click(function () {
         var movie_title = $('#search').val();
@@ -33,14 +33,16 @@ $(document).ready(function () {
 
     /*Search for movies*/
     async function search_form(title) {
-        
+        console.log("title//"+title);
         const url = baseUrl + 'search/movie?api_key='+apikey+'&query=' + title;
         document.querySelector('.headtitle').innerHTML = 'Results for "' + title + '"';
-        document.querySelector('#container').innerHTML = "";
+       
+        console.log("url//"+url);
         await fetch(url)
             .then((resp) => resp.json())
             .then(async (myJson) => {
                 nowplaying(myJson);
+                document.querySelector('#container').innerHTML = "";
             })
             .catch(error => showSnackbar("from search_form//" + error));
 

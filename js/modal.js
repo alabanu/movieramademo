@@ -18,7 +18,8 @@ function onReady() {
         div.addEventListener('click', function () {
             const modalId = this.dataset.open;
             $('body').css('overflow', 'hidden');
-            // div.innerHTML = '<i id = "spin" class="fas fa-spinner fa-spin"></i>';
+            $('.modal-dialog').css('visibility', 'visible');
+            
             if (i === 1) {
                 getTitle(this.id);
                 addVideo(this.id);
@@ -26,9 +27,6 @@ function onReady() {
                 addSimilar(this.id);
                 i++;
             }
-           
-            // setTimeout(myfonction, 500); 
-           
             
             document.getElementById(modalId).classList.add(isVisible);
 
@@ -38,7 +36,6 @@ function onReady() {
 
     for (const div of closeDivs) {
         div.addEventListener("click", function () {
-            $('body').css('overflow', 'auto');
             this.parentElement.parentElement.parentElement.classList.remove(isVisible);
         });
     }
