@@ -11,7 +11,7 @@ $(document).ready(function () {
 
     $("#search").keyup(debounce(function (e) {
         if (e.which == 9) { e.preventDefault(); }  //alt-tab key
-    
+
         if ($(this).val() != "") {
             search_form($(this).val());
         }
@@ -33,11 +33,11 @@ $(document).ready(function () {
 
     /*Search for movies*/
     async function search_form(title) {
-        console.log("title//"+title);
-        const url = baseUrl + 'search/movie?api_key='+apikey+'&query=' + title;
+        console.log("title//" + title);
+        const url = baseUrl + 'search/movie?api_key=' + apikey + '&query=' + title;
         document.querySelector('.headtitle').innerHTML = 'Results for "' + title + '"';
-       
-        console.log("url//"+url);
+
+        console.log("url//" + url);
         await fetch(url)
             .then((resp) => resp.json())
             .then(async (myJson) => {

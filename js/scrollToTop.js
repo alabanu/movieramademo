@@ -1,4 +1,4 @@
-function basicScrollTop(){
+function basicScrollTop() {
 
     var btnTop = document.querySelector('#goTop');
 

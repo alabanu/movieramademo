@@ -8,7 +8,7 @@ var stickyNavTop = $('.nav').offset().top;
 
 
 $(function () {
-    
+
     window.onload = function (e) {
         $(".loader").fadeIn("slow");
         fetchPage(++page);
@@ -106,10 +106,10 @@ async function nowplaying(myJson) {
 
     var x = document.querySelector("#nodata");
     x.style.display = "none";
-    
+
     if (movies.results.length != 0) {
         total_pages = movies.total_pages;
-        console.log("url//"+url);
+        console.log("url//" + url);
         for (var x = 0; x < movies.results.length; x++) {
             card = document.createElement('li');
             card.className = 'cards_item';
@@ -232,9 +232,9 @@ function displayButtons(movieId) {
     return detailsbut;
 }
 async function displayGenres(genreId) {
- 
+
     let resultgen = await getGenre(genreId);
-    
+
     var str = resultgen.toString()
     if (str.length > 0) {
         var output = str.split(',').map(function (w) {
@@ -373,7 +373,7 @@ async function addSimilar(movieid) {
                     imagediv.appendChild(titlelink);
                     carousel.appendChild(imagediv);
 
-                    document.querySelector('.similar').appendChild(carousel);                 
+                    document.querySelector('.similar').appendChild(carousel);
 
                 })
             } else {

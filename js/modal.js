@@ -19,7 +19,7 @@ function onReady() {
             const modalId = this.dataset.open;
             $('body').css('overflow', 'hidden');
             $('.modal-dialog').css('visibility', 'visible');
-            
+
             if (i === 1) {
                 getTitle(this.id);
                 addVideo(this.id);
@@ -27,7 +27,7 @@ function onReady() {
                 addSimilar(this.id);
                 i++;
             }
-            
+
             document.getElementById(modalId).classList.add(isVisible);
 
         });
@@ -61,7 +61,7 @@ function onReady() {
 
 }
 
-function myfonction(){
+function myfonction() {
     // $('.fa-spinner').fadeOut();
     document.getElementById("spin").remove();
     $('.open-modal').innerHTML = 'More info';
