@@ -18,7 +18,7 @@ function onReady() {
         div.addEventListener('click', function () {
             const modalId = this.dataset.open;
             $('body').css('overflow', 'hidden');
-            div.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            // div.innerHTML = '<i id = "spin" class="fas fa-spinner fa-spin"></i>';
             if (i === 1) {
                 getTitle(this.id);
                 addVideo(this.id);
@@ -27,7 +27,7 @@ function onReady() {
                 i++;
             }
            
-            setTimeout(myfonction, 500); 
+            // setTimeout(myfonction, 500); 
            
             
             document.getElementById(modalId).classList.add(isVisible);
@@ -65,7 +65,8 @@ function onReady() {
 }
 
 function myfonction(){
-    $('.fa-spinner').fadeOut();
+    // $('.fa-spinner').fadeOut();
+    document.getElementById("spin").remove();
     $('.open-modal').innerHTML = 'More info';
 }
 
