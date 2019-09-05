@@ -9,6 +9,7 @@ var stickyNavTop = $(".nav").offset().top;
 async function fetchPage(page) {
 
     const url = baseUrl + "movie/now_playing?api_key=" + apikey + "&page=" + page;
+   
     await fetch(url)
         .then((response) => {
             return response.json();
@@ -29,12 +30,9 @@ function stickyNav() {
 
 }
 
-$(function () {
-
-    window.onload = function (e) {
-        $(".loader").fadeIn("slow");
-        fetchPage(++page);
-    }
+$(function () {   
+    $(".loader").fadeIn("slow");
+    fetchPage(++page);
 
     window.addEventListener("scroll", throttle(stickyNav, 100));
     window.addEventListener("scroll", debounce(debouncescroll, 1000));
