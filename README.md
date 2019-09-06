@@ -6,7 +6,6 @@ Movierama is a single page web application that uses the [Movie DB](https://www.
 
 View demo at: [https://movieramademo.herokuapp.com](https://movieramademo.herokuapp.com)
 
-
 ## Feautures
 
 - Now playing movies on the home page.

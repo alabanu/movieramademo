@@ -1,4 +1,4 @@
-function basicScrollTop() {
+(function basicScrollTop() {
 
     var btnTop = document.querySelector("#goTop");
 
@@ -11,7 +11,7 @@ function basicScrollTop() {
     }
 
     var topScrollTo = function () {
-        if (window.scrollY != 0) {
+        if (window.scrollY !== 0) {
             setTimeout(function () {
                 window.scrollTo(0, window.scrollY - 30);
                 topScrollTo();
@@ -22,6 +22,6 @@ function basicScrollTop() {
     window.addEventListener("scroll", btntop);
     btnTop.addEventListener("click", topScrollTo);
 
-}
+})();
 
-basicScrollTop();
+// basicScrollTop();
