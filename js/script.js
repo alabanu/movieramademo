@@ -6,6 +6,15 @@ const apikey = "bc50218d91157b1ba4f142ef7baaa6a0";
 let totalPages = 1;
 var stickyNavTop = $(".nav").offset().top;
 
+
+function showSnackbar(message) {
+    var x = document.getElementById("snackbar");
+    x.className = "showerror";
+    x.innerHTML = message;
+    setTimeout(function () { x.className = x.className.replace("showerror", ""); }, 3000);
+    $(".loader").fadeOut("slow");
+}
+
 async function getGenre(genres) {
 
     let moviegenres = [];
@@ -15,15 +24,15 @@ async function getGenre(genres) {
         .then((res) => {
             return res.json();
         }).then((genreJson) => {
-            const genre_array = JSON.stringify(genreJson);
-            var contact = JSON.parse(genre_array);
-            genres.forEach(element => {
+            const genreArray = JSON.stringify(genreJson);
+            var contact = JSON.parse(genreArray);
+            genres.forEach((element) => {
                 contact.genres.forEach(
                     (e2) => {
-                        if (element === e2.id)
-                            moviegenres.push(e2.name);
+                        if (element === e2.id){
+                            moviegenres.push(e2.name);}
                     }
-                )
+                );
             });
 
             return Promise.all(moviegenres).then((results) => {
@@ -31,7 +40,7 @@ async function getGenre(genres) {
             });
 
         })
-        .catch(error => showSnackbar("from getGenre//" + error));
+        .catch((error) => showSnackbar("from getGenre//" + error));
 
     return dataend;
 }
@@ -41,16 +50,45 @@ async function displayGenres(genreId) {
 
     let resultgen = await getGenre(genreId);
 
-    var str = resultgen.toString()
+    var str = resultgen.toString();
     if (str.length > 0) {
         var output = str.split(",").map(function (w) {
             return "<span class='chip'>" + w + "</span>&nbsp";
-        }).join("")
+        }).join("");
         return output;
     }
     else {
         return "<i class = 'fas fa-film fa-lg' aria-hidden='true'></i>&nbsp";
     }
+}
+
+function displayButtons(movieId) {
+
+    const detailsbut = document.createElement("button");
+    detailsbut.appendChild(document.createTextNode("More Info"));
+    detailsbut.id = movieId;
+    detailsbut.className = "open-modal";
+    detailsbut.setAttribute("data-open", "modal");
+    return detailsbut;
+}
+
+
+
+function displayYearVotediv(releaseDate, average) {
+
+    //date_average div
+    const subdiv = document.createElement("div");
+    //Release year
+    const releaseYear = document.createElement("h5");
+    releaseYear.className = "relcls";
+    releaseYear.innerHTML = "<i class = 'fas fa-calendar-alt fa-lg' aria-hidden='true'></i>&nbsp&nbsp" + getYear(releaseDate);
+    //Vote average
+    const voteAverage = document.createElement("h5");
+    voteAverage.className = "votecls";
+    voteAverage.innerHTML = "<i class = 'fas fa-star fa-lg' aria-hidden='true'></i>&nbsp" + average;
+    subdiv.appendChild(releaseYear);
+    subdiv.appendChild(voteAverage);
+    return subdiv;
 }
 
 async function nowplaying(myJson) {
@@ -86,11 +124,11 @@ async function nowplaying(myJson) {
             //title
             const h1 = document.createElement("h4");
             h1.className = "titlecls";
-            h1.textContent = movies.results[i].title;
+            h1.textContent = movies.results[parseInt(i)].title;
             carddiv.appendChild(h1);
 
             //Release year + average
-            var subdiv = displayYearVotediv(movies.results[i].release_date, movies.results[i].vote_average);
+            var subdiv = displayYearVotediv(movies.results[parseInt(i)].release_date, movies.results[parseInt(i)].vote_average);
             carddiv.appendChild(subdiv);
 
             //Genres
@@ -147,6 +185,19 @@ function stickyNav() {
 
 }
 
+//infinite scrolling
+function getDocumentHeight() {
+
+    const body = document.body;
+    const html = document.documentElement;
+
+    return Math.max(
+        body.scrollHeight, body.offsetHeight,
+        html.clientHeight, html.scrollHeight, html.offsetHeight
+    );
+}
+
+
 function debouncescroll() {
     if (getScrollTop() < getDocumentHeight() - window.innerHeight) {return;}
     if (page < totalPages) {
@@ -156,6 +207,32 @@ function debouncescroll() {
     else {
         $(".loader").fadeOut("slow");
     }
+}
+
+function throttle(fn, wait) {
+    var time = Date.now();
+    return function () {
+        if ((time + wait - Date.now()) < 0) {
+            fn();
+            time = Date.now();
+        }
+    };
+}
+
+function debounce(func, wait, immediate) {
+
+    var timeout;
+    return function () {
+        var context = this, args = arguments;
+        var later = function () {
+            timeout = null;
+            if (!immediate) {func.apply(context, args);}
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) {func.apply(context, args);}
+    };
 }
 
 $(function () {   
@@ -177,7 +254,7 @@ $("#search").blur(function () {
 });
 
   /*Search for movies*/
-  async function search_form(title) {
+  async function searchForm(title) {
    
     const url = baseUrl + "search/movie?api_key=" + apikey + "&query=" + title;
     document.querySelector(".headtitle").innerHTML = "Results for '" + title + "'";
@@ -188,7 +265,7 @@ $("#search").blur(function () {
             nowplaying(myJson);
             document.querySelector("#container").innerHTML = "";
         })
-        .catch(error => showSnackbar("from search_form//" + error));
+        .catch((error) => showSnackbar("from search_form//" + error));
 
     }
 
@@ -196,7 +273,7 @@ $("#search").blur(function () {
 $(".go-icon").click(function () {
     var movieTitle = $("#search").val();
     if (movieTitle.length !== 0) {
-        search_form(movieTitle);
+        searchForm(movieTitle);
     }
     else {
         var x = document.querySelector("#nodata");
@@ -206,55 +283,16 @@ $(".go-icon").click(function () {
 });
 
 
-function throttle(fn, wait) {
-    var time = Date.now();
-    return function () {
-        if ((time + wait - Date.now()) < 0) {
-            fn();
-            time = Date.now();
-        }
-    };
-}
-
-
-
-function debounce(func, wait, immediate) {
-
-    var timeout;
-    return function () {
-        var context = this, args = arguments;
-        var later = function () {
-            timeout = null;
-            if (!immediate) {func.apply(context, args)};
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) {func.apply(context, args)};
-    };
-};
-
 $("#search").keyup(debounce(function (e) {
     if (e.which === 9) { e.preventDefault(); }  //alt-tab key
 
     if ($(this).val() !== "") {
-        search_form($(this).val());
+        searchForm($(this).val());
     }
     $(".go-icon").addClass("go-in");
 
 }, 850));
 
-//infinite scrolling
-function getDocumentHeight() {
-
-    const body = document.body;
-    const html = document.documentElement;
-
-    return Math.max(
-        body.scrollHeight, body.offsetHeight,
-        html.clientHeight, html.scrollHeight, html.offsetHeight
-    );
-}
 
 function getScrollTop() {
 
@@ -265,7 +303,7 @@ function getScrollTop() {
 /*In theaters*/
 
 
-function displayOverview(overview_text) {
+function displayOverview(overviewText) {
 
     const hovercover = document.createElement("div");
     hovercover.className = "hover-cover";
@@ -275,7 +313,7 @@ function displayOverview(overview_text) {
     hovercoversubtitle.innerHTML = "Overview";
     hovercoversub.appendChild(hovercoversubtitle);
     const overview = document.createElement("p");
-    overview.innerHTML = overview_text;
+    overview.innerHTML = overviewText;
     hovercoversub.appendChild(overview);
     hovercover.appendChild(hovercoversub);
     return hovercover;
@@ -301,64 +339,12 @@ function displayPoster(poster_path) {
     return imagediv;
 }
 
-
-
-
-
-function displayYearVotediv(releaseDate, average) {
-
-    //date_average div
-    const subdiv = document.createElement("div");
-    //Release year
-    const releaseYear = document.createElement("h5");
-    releaseYear.className = "relcls";
-    releaseYear.innerHTML = "<i class = 'fas fa-calendar-alt fa-lg' aria-hidden='true'></i>&nbsp&nbsp" + getYear(releaseDate);
-    //Vote average
-    const voteAverage = document.createElement("h5");
-    voteAverage.className = "votecls";
-    voteAverage.innerHTML = "<i class = 'fas fa-star fa-lg' aria-hidden='true'></i>&nbsp" + average;
-    subdiv.appendChild(releaseYear);
-    subdiv.appendChild(voteAverage);
-    return subdiv;
-}
-
-function displayButtons(movieId) {
-
-    const detailsbut = document.createElement("button");
-    detailsbut.appendChild(document.createTextNode("More Info"));
-    detailsbut.id = movieId;
-    detailsbut.className = "open-modal";
-    detailsbut.setAttribute("data-open", "modal");
-    return detailsbut;
-}
-
-
-function showSnackbar(message) {
-    var x = document.getElementById("snackbar")
-    x.className = "showerror";
-    x.innerHTML = message;
-    setTimeout(function () { x.className = x.className.replace("showerror", ""); }, 3000);
-    $(".loader").fadeOut("slow");
-}
-
-
-
-
 function getYear(date) {
 
     var d = new Date(date);
     var n = d.getFullYear();
     return n;
 }
-
-
-
-/*View movie details*/
-
-
-
-
-
 
 document.querySelectorAll(".review-cont article").forEach(function (o) {
     o.addEventListener("click", function (e) {

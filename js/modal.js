@@ -24,7 +24,7 @@ async function getTitle(movieid) {
         .then(function (data) {
             document.querySelector("#modaltitle span").innerHTML = data.title;
         })
-        .catch(error => showSnackbar("from gettitle//" + error));
+        .catch((error) => showSnackbar("from gettitle//" + error));
 }
 
 
@@ -40,7 +40,7 @@ async function addVideo(movieid) {
                 document.querySelector(".trailer").innerHTML = "<h3>Trailer</h3> <p>Not Available</p>";
             }
         })
-        .catch(error => showSnackbar("from addVideo//" + error));
+        .catch((error) => showSnackbar("from addVideo//" + error));
 }
 
 async function addReview(movieid) {
@@ -60,7 +60,7 @@ async function addReview(movieid) {
                 document.querySelector(".review").innerHTML = "<h3>User Reviews</h3> <p>Not Available</p>";
             }
         })
-        .catch(error => showSnackbar("from addReview//" + error));
+        .catch((error) => showSnackbar("from addReview//" + error));
 }
 
 async function addSimilar(movieid) {
@@ -107,7 +107,7 @@ async function addSimilar(movieid) {
             }
 
         })
-        .catch(error => showSnackbar("from addSimilar// " + error));
+        .catch((error) => showSnackbar("from addSimilar// " + error));
 }
 
 
@@ -118,7 +118,7 @@ function modalCreate(obj, flag){
         $("body").css("overflow", "hidden");
         $(".modal-dialog").css("visibility", "visible");
 
-        if (i === 1) {
+        if ( i=== 1) {
             getTitle(this.id);
             addVideo(this.id);
             addReview(this.id);
@@ -128,6 +128,12 @@ function modalCreate(obj, flag){
 
         document.getElementById(modalId).classList.add(flag);
 
+    });
+}
+
+function closemodal(div, isVisible){
+    div.addEventListener("click", function () {
+        this.parentElement.parentElement.parentElement.classList.remove(isVisible);
     });
 }
 
@@ -142,9 +148,7 @@ function onReady() {
     }
 
     for (const div of closeDivs) {
-        div.addEventListener("click", function () {
-            this.parentElement.parentElement.parentElement.classList.remove(isVisible);
-        });
+        closemodal(div, isVisible);
     }
 
     document.addEventListener("click", (e) => {
